@@ -1,0 +1,21 @@
+{
+    "flutter": {
+        "platforms": {
+            "android": {
+                "default": {
+                    "projectId": "photo-enhancer-app-7022025",
+                    "appId": "1:82114047904:android:f6ffad9861a7b3f0adfec5",
+                    "fileOutput": "android/app/google-services.json"
+                }
+            },
+            "dart": {
+                "lib/firebase_options.dart": {
+                    "projectId": "photo-enhancer-app-7022025",
+                    "configurations": {
+                        "android": "1:82114047904:android:f6ffad9861a7b3f0adfec5"
+                    }
+                }
+            }
+        }
+    }
+}
