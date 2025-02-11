@@ -8,9 +8,10 @@
     "outDir": "lib",
     "sourceMap": true,
     "strict": true,
+    "skipLibCheck": true,
     "target": "es2017"
   },
-  "compileOnSave": true,
+  "compileOnSave": false,
   "include": [
     "src"
   ]

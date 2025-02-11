@@ -1,0 +1,11 @@
+{
+    "appName": "Photo Enhancer",
+    "okay": "Okay",
+    "somethingWentWrong": "Something went wrong",
+    "actionMenu": {
+        "privacyPolicy": "Privacy Policy",
+        "licences": "Licences",
+        "deleteAccount": "Delete Account",
+        "signOut": "Sign Out"
+    }
+}

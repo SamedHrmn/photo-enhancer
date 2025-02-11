@@ -1,0 +1,4 @@
+enum SharedPrefKeys {
+  googleId,
+  deviceVerified,
+}

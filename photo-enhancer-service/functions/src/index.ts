@@ -1,13 +1,5 @@
 import { verifyIntegrity } from "./verify_integrity";
-import { createUser } from "./user_manager";
+import { createUser, getUserData, deleteAccount } from "./user_manager";
 
 export { verifyIntegrity };
-export { createUser };
-
-
-
-
-
-
-
-
+export { createUser, getUserData, deleteAccount };

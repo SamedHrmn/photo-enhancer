@@ -47,3 +47,5 @@ app.*.map.json
 /storeKey
 *.jks
 /android/app/google-services.json
+*.env.development
+*.env.production

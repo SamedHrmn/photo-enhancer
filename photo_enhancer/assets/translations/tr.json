@@ -1,0 +1,11 @@
+{
+    "appName": "Photo Enhancer",
+    "okay": "Tamam",
+    "somethingWentWrong": "Bir hata oluştu.",
+    "actionMenu": {
+        "privacyPolicy": "Gizlilik Politikası",
+        "licences": "Lisanslar",
+        "deleteAccount": "Hesabımı Sil",
+        "signOut": "Çıkış Yap"
+    }
+}
