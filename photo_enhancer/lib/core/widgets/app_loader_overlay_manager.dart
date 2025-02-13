@@ -6,8 +6,14 @@ import 'package:photo_enhancer/locator.dart';
 class AppLoaderOverlayManager {
   const AppLoaderOverlayManager();
 
-  static void showOverlay() {
-    getIt<AppNavigator>().navigatorKey.currentContext!.loaderOverlay.show();
+  static void showOverlay({Widget? widget}) {
+    getIt<AppNavigator>().navigatorKey.currentContext!.loaderOverlay.show(
+          widgetBuilder: widget != null
+              ? (progress) => AppLoaderOverlay(
+                    customIndicator: widget,
+                  )
+              : null,
+        );
   }
 
   static void hideOverlay() {

@@ -7,7 +7,7 @@ import 'package:photo_enhancer/common/widgets/delete_account_dialog.dart';
 import 'package:photo_enhancer/core/enums/app_localized_keys.dart';
 import 'package:photo_enhancer/core/enums/route_enum.dart';
 import 'package:photo_enhancer/core/navigation/app_navigator.dart';
-import 'package:photo_enhancer/core/widgets/global_loader_overlay.dart';
+import 'package:photo_enhancer/core/widgets/app_loader_overlay_manager.dart';
 import 'package:photo_enhancer/features/auth/viewmodel/auth_view_model.dart';
 import 'package:photo_enhancer/locator.dart';
 

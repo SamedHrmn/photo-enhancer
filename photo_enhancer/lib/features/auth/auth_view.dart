@@ -7,7 +7,7 @@ import 'package:photo_enhancer/core/enums/route_enum.dart';
 import 'package:photo_enhancer/core/navigation/app_navigator.dart';
 import 'package:photo_enhancer/core/theme/app_theme.dart';
 import 'package:photo_enhancer/core/widgets/base_statefull_widget.dart';
-import 'package:photo_enhancer/core/widgets/global_loader_overlay.dart';
+import 'package:photo_enhancer/core/widgets/app_loader_overlay_manager.dart';
 import 'package:photo_enhancer/features/auth/viewmodel/auth_view_model.dart';
 import 'package:photo_enhancer/features/auth/viewmodel/auth_view_state.dart';
 import 'package:photo_enhancer/locator.dart';

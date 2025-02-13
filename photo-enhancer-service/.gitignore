@@ -71,3 +71,4 @@ node_modules/
 /functions/photo-enhancer-app-playintegrity-key.json
 /functions/photo-enhancer-app-7022025-firebase-adminsdk-fbsvc-060bc396fd.json
 /functions/photo-enhancer-app-playdeveloper-key.json
+/functions/.secret.local

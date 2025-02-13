@@ -3,17 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:photo_enhancer/common/helpers/app_asset_manager.dart';
+import 'package:photo_enhancer/common/helpers/app_file_manager.dart';
 import 'package:photo_enhancer/common/helpers/app_initializer.dart';
+import 'package:photo_enhancer/common/helpers/app_permission_manager.dart';
 import 'package:photo_enhancer/common/helpers/app_sizer.dart';
 import 'package:photo_enhancer/common/helpers/shared_pref_manager.dart';
 import 'package:photo_enhancer/core/enums/route_enum.dart';
 import 'package:photo_enhancer/core/navigation/app_navigator.dart';
 import 'package:photo_enhancer/core/theme/app_theme.dart';
 import 'package:photo_enhancer/core/widgets/base_statefull_widget.dart';
-import 'package:photo_enhancer/core/widgets/global_loader_overlay.dart';
+import 'package:photo_enhancer/core/widgets/app_loader_overlay_manager.dart';
 import 'package:photo_enhancer/features/auth/data/app_user_repository.dart';
 import 'package:photo_enhancer/features/auth/viewmodel/auth_view_model.dart';
 import 'package:photo_enhancer/features/auth/viewmodel/auth_view_state.dart';
+import 'package:photo_enhancer/features/colorize-image/pick_image_view_model.dart';
+import 'package:photo_enhancer/features/home/home_view_model.dart';
+import 'package:photo_enhancer/features/show-result/colorize_image_repository.dart';
+import 'package:photo_enhancer/features/show-result/show_result_view_model.dart';
 import 'package:photo_enhancer/locator.dart';
 
 Future<void> main() async {
@@ -41,6 +47,22 @@ class MyApp extends StatelessWidget {
           create: (context) => AuthViewModel(
             appUserRepository: getIt<AppUserRepository>(),
             prefManager: getIt<SharedPrefManager>(),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => PickImageViewModel(
+            appFileManager: getIt<AppFileManager>(),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => ShowResultViewModel(
+            colorizeImageRepository: getIt<ColorizeImageRepository>(),
+            appFileManager: getIt<AppFileManager>(),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => HomeViewModel(
+            appPermissionManager: getIt<AppPermissionManager>(),
           ),
         ),
       ],
