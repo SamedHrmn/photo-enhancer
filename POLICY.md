@@ -66,8 +66,17 @@ The Application offers **consumable in-app purchases** through **Google Play Ser
 - All transactions are **final and non-refundable**, except where required by law or as permitted by **Google Play’s refund policy**.  
 - The Application **does not store or process** your payment details (such as credit card information). All payments are handled securely by **Google Play Services**.  
 
-For any purchase-related inquiries, you may contact the Service Provider at **xxsamedx@gmail.com**.  
+For any purchase-related inquiries, you may contact the Service Provider at **xxsamedx@gmail.com**.
 
+## Important Notices
+
+### 1. AI-Generated Results Disclaimer  
+Our application uses AI-based technology to enhance and restore photos. While we strive to provide the best possible results, the AI may not always generate the expected outcome for every image. The quality and accuracy of the enhancements can vary depending on the original photo's quality, clarity, and other factors. By using this application, you acknowledge and accept that AI-generated results may not always meet your expectations.
+
+### 2. Loss of Photo Coins Upon Account Deletion  
+Photo Coins are virtual credits used within the application to process images. If you delete your account, any remaining Photo Coins associated with your account will be permanently lost and cannot be recovered. We do not offer refunds or credit transfers for unused Photo Coins after account deletion. By using this application, you agree to this policy.
+
+If you have any questions or concerns regarding these terms, please contact us at **xxsamedx@gmail.com**.
 
 **Contact Us**
 
