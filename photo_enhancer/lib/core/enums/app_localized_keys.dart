@@ -8,6 +8,29 @@ enum AppLocalizedKeys {
   actionMenuLicences,
   deleteAccount,
   signOut,
+  discard,
+  save,
+  openSettings,
+  noContinue,
+  storagePermissionNeeded,
+  continueDiscardDialogTitle,
+  continueDiscardDialogContent,
+  continueDiscardDialogAction1,
+  continueDiscardDialogAction2,
+  imageSavedSuccessfullyTo,
+  tapToPickImage,
+  colorizeIt,
+  deblurIt,
+  appActionColorizeImage,
+  appActionDeblurImage,
+  tooltipsColorizeImage,
+  tooltipsDeblurImage,
+  imageResultDialogErrorText,
+  tryAgain,
+  cancel,
+  imSure,
+  accountDeletionTitle,
+  accountDeletionWarning,
   okay;
 
   String toLocalized(BuildContext context, {List<String>? args}) {
@@ -15,6 +38,21 @@ enum AppLocalizedKeys {
       case AppLocalizedKeys.appName:
       case AppLocalizedKeys.somethingWentWrong:
       case AppLocalizedKeys.okay:
+      case AppLocalizedKeys.discard:
+      case AppLocalizedKeys.save:
+      case AppLocalizedKeys.openSettings:
+      case AppLocalizedKeys.noContinue:
+      case AppLocalizedKeys.storagePermissionNeeded:
+      case AppLocalizedKeys.imageSavedSuccessfullyTo:
+      case AppLocalizedKeys.tapToPickImage:
+      case AppLocalizedKeys.colorizeIt:
+      case AppLocalizedKeys.deblurIt:
+      case AppLocalizedKeys.imageResultDialogErrorText:
+      case AppLocalizedKeys.tryAgain:
+      case AppLocalizedKeys.cancel:
+      case AppLocalizedKeys.imSure:
+      case AppLocalizedKeys.accountDeletionTitle:
+      case AppLocalizedKeys.accountDeletionWarning:
         return name.tr(context: context, args: args);
       case AppLocalizedKeys.actionMenuPrivacyPolicy:
         return 'actionMenu.privacyPolicy'.tr(context: context, args: args);
@@ -24,6 +62,22 @@ enum AppLocalizedKeys {
         return 'actionMenu.deleteAccount'.tr(context: context, args: args);
       case AppLocalizedKeys.signOut:
         return 'actionMenu.signOut'.tr(context: context, args: args);
+      case AppLocalizedKeys.continueDiscardDialogTitle:
+        return 'continueDiscardDialog.title'.tr(context: context, args: args);
+      case AppLocalizedKeys.continueDiscardDialogContent:
+        return 'continueDiscardDialog.content'.tr(context: context, args: args);
+      case AppLocalizedKeys.continueDiscardDialogAction1:
+        return 'continueDiscardDialog.action1'.tr(context: context, args: args);
+      case AppLocalizedKeys.continueDiscardDialogAction2:
+        return 'continueDiscardDialog.action2'.tr(context: context, args: args);
+      case AppLocalizedKeys.appActionColorizeImage:
+        return 'appAction.colorizeImage'.tr(context: context, args: args);
+      case AppLocalizedKeys.appActionDeblurImage:
+        return 'appAction.deblurImage'.tr(context: context, args: args);
+      case AppLocalizedKeys.tooltipsColorizeImage:
+        return 'tooltips.colorizeImage'.tr(context: context, args: args);
+      case AppLocalizedKeys.tooltipsDeblurImage:
+        return 'tooltips.deblurImage'.tr(context: context, args: args);
     }
   }
 }

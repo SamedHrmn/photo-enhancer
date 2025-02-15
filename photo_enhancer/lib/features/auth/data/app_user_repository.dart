@@ -111,6 +111,9 @@ class AppUserRepository {
 
   Future<bool> deleteAccount({required String id}) async {
     try {
+      final success = await signOutFromGoogle();
+      if (!success) return false;
+
       final response = await dioApiClient.post<Map<String, dynamic>>(
         AppInitializer.getStringEnv(EnvKeys.deleteAccountUrl),
         data: {

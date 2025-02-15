@@ -2,9 +2,11 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:downloadsfolder/downloadsfolder.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image/image.dart' as img;
 import 'package:path_provider/path_provider.dart';
+import 'package:photo_enhancer/core/widgets/app_logger.dart';
 import 'package:photo_enhancer/features/colorize-image/pick_image_view_model.dart';
 
 // Define callback type for state updates
@@ -32,10 +34,6 @@ class CompressOnError extends CompressImageState {
   final String error;
 
   CompressOnError({required this.error}) : super();
-}
-
-class CompressOnCancelled extends CompressImageState {
-  const CompressOnCancelled() : super();
 }
 
 class AppFileManager {
@@ -84,24 +82,32 @@ class AppFileManager {
     return PickedImageFormat.unsupported;
   }
 
-  Uint8List decodeBase64ToBytes(String base64) {
-    return base64Decode(base64);
+  Future<Uint8List> loadImageBytesFromImageUrl(String imageUrl) async {
+    final image = NetworkAssetBundle(Uri.parse(imageUrl));
+    final bytes = await image.load("");
+    return bytes.buffer.asUint8List();
   }
 
   String encodeBase64FromByte(Uint8List byte) {
     return base64Encode(byte);
   }
 
-  Future<void> pickAndCompressImage(ProcessingStateCallback onStateChanged) async {
+  Uint8List decodeBase64FromString(String base64) {
+    return base64Decode(base64);
+  }
+
+  Future<XFile?> pickImage() async {
     final picker = ImagePicker();
 
-    // Pick an image from the gallery
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile == null) {
-      onStateChanged(CompressOnCancelled());
-      return;
-    }
+    return picker.pickImage(source: ImageSource.gallery);
+  }
 
+  Future<void> compressImage(
+    ProcessingStateCallback onStateChanged, {
+    required XFile pickedFile,
+    int maxWidth = 1024,
+    int maxHeight = 1024,
+  }) async {
     onStateChanged(CompressOnLoading());
 
     final format = determineFileExtFromPath(pickedFile.path);
@@ -110,6 +116,8 @@ class AppFileManager {
     final result = await compute(_compressImageInIsolate, {
       'imagePath': pickedFile.path,
       'format': format.name,
+      'maxWidth': maxWidth,
+      'maxHeight': maxHeight,
     });
 
     if (result == null) {
@@ -124,6 +132,7 @@ class AppFileManager {
         image: AppPickedImage(
           bytes: compressedBytes,
           format: format,
+          path: pickedFile.path,
         ),
       ),
     );
@@ -134,14 +143,34 @@ class AppFileManager {
 
 // Function to run in isolate for image compression
 Future<File?> _compressImageInIsolate(Map<String, dynamic> params) async {
-  String imagePath = params['imagePath'];
-  String format = params['format'];
+  final imagePath = params['imagePath'];
+  final format = params['format'];
+  final maxWidth = params['maxWidth'];
+  final maxHeight = params['maxHeight'];
 
   File file = File(imagePath);
-  img.Image? image = img.decodeImage(file.readAsBytesSync());
+  img.Image? source = img.decodeImage(file.readAsBytesSync());
 
-  if (image == null) {
+  if (source == null) {
     return null;
+  }
+
+  bool isLandscape = source.width > source.height;
+  int targetWidth = isLandscape ? maxHeight : maxWidth;
+  int targetHeight = isLandscape ? maxWidth : maxHeight;
+
+  if (source.width > targetWidth || source.height > targetHeight) {
+    AppLogger.logInfo(
+      "Image compressed: ${source.width}x${source.height} to ${targetWidth}x$targetHeight",
+    );
+
+    source = img.copyResize(
+      source,
+      width: maxWidth,
+      height: maxHeight,
+      maintainAspect: true,
+      backgroundColor: img.ColorUint8.rgba(0, 0, 0, 0),
+    );
   }
 
   int quality = 100;
@@ -153,14 +182,14 @@ Future<File?> _compressImageInIsolate(Map<String, dynamic> params) async {
     // Resize image while maintaining aspect ratio
     switch (format) {
       case "png":
-        compressedData = img.encodePng(image);
+        compressedData = img.encodePng(source);
         break;
       case "jpg":
       case "jpeg":
-        compressedData = img.encodeJpg(image);
+        compressedData = img.encodeJpg(source);
     }
 
-    if (image.hasAlpha) quality -= 10;
+    if (source.hasAlpha) quality -= 10;
 
     // Check the file size
     if (compressedData.length <= targetSize) {

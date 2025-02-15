@@ -8,4 +8,5 @@ final class AppAssetManager {
   static const String tapToPickLottie = 'assets/lottie/tap_to_pick_lottie.json';
   static const String loadingLottie = 'assets/lottie/loading_lottie.json';
   static const String errorLottie = 'assets/lottie/error_lottie.json';
+  static const String photoCoinLottie = 'assets/lottie/photo_coin_lottie.json';
 }

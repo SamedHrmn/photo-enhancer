@@ -11,6 +11,7 @@ class AppText extends StatelessWidget {
     this.fontWeight = FontWeight.w600,
     this.textAlign = TextAlign.start,
     this.color = AppTheme.textColorLight,
+    this.hasOverflow = false,
   });
 
   final AppLocalizedKeys localizedKey;
@@ -19,11 +20,13 @@ class AppText extends StatelessWidget {
   final FontWeight fontWeight;
   final TextAlign textAlign;
   final Color color;
+  final bool hasOverflow;
 
   @override
   Widget build(BuildContext context) {
     return Text(
       localizedKey.toLocalized(context, args: localizedArg),
+      overflow: hasOverflow ? TextOverflow.ellipsis : null,
       textAlign: textAlign,
       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
             fontWeight: fontWeight,

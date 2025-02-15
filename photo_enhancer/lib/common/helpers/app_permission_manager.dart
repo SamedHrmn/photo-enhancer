@@ -32,7 +32,7 @@ final class AppPermissionManager {
     }
   }
 
-  static Future<bool> storagePermissionIsGrantedBelowSdk33() async {
+  Future<bool> storagePermissionIsGrantedBelowSdk33() async {
     if (Platform.isAndroid) {
       final sdkIntAndroid = await getIt<AppDeviceManager>().getAndroidSdkInt();
       if (sdkIntAndroid < 33) {

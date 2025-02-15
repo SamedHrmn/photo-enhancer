@@ -4,6 +4,7 @@ enum EnvKeys {
   getUserDataUrl('GET_USER_DATA_URL'),
   deleteAccountUrl('DELETE_ACCOUNT_URL'),
   colorizeImageUrl('COLORIZE_IMAGE_URL'),
+  deblurImageUrl('DEBLUR_IMAGE_URL'),
   verifyIntegrityUrl('VERIFY_INTEGRITY_URL');
 
   final String keyName;

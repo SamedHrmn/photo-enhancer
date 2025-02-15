@@ -1,15 +1,17 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:photo_enhancer/common/helpers/app_asset_manager.dart';
 import 'package:photo_enhancer/common/helpers/app_sizer.dart';
-import 'package:photo_enhancer/common/widgets/app_lottie_player.dart';
-import 'package:photo_enhancer/core/navigation/app_navigator.dart';
-import 'package:photo_enhancer/core/widgets/app_loader_overlay_manager.dart';
+import 'package:photo_enhancer/common/widgets/app_primary_button.dart';
+import 'package:photo_enhancer/core/enums/app_localized_keys.dart';
+import 'package:photo_enhancer/features/auth/viewmodel/auth_view_model.dart';
 import 'package:photo_enhancer/features/colorize-image/pick_image_view_model.dart';
-import 'package:photo_enhancer/features/show-result/colorized_image_result_error_dialog.dart';
-import 'package:photo_enhancer/features/show-result/colorized_image_result_sheet.dart';
+import 'package:photo_enhancer/features/home/home_view_model.dart';
+import 'package:photo_enhancer/features/show-result/data/colorize-image/colorize_image_request.dart';
+import 'package:photo_enhancer/features/show-result/data/deblur-image/deblur_image_request.dart';
 import 'package:photo_enhancer/features/show-result/show_result_view_model.dart';
-import 'package:photo_enhancer/locator.dart';
+import 'package:photo_enhancer/features/show-result/view/colorize-image/colorize_image_result_view.dart';
+import 'package:photo_enhancer/features/show-result/view/deblur-image/deblur_image_result_view.dart';
 
 class ShowResultView extends StatelessWidget {
   const ShowResultView({super.key, required this.pickedImage});
@@ -17,9 +19,24 @@ class ShowResultView extends StatelessWidget {
   final AppPickedImage pickedImage;
 
   Future<void> _colorizeIt(BuildContext context) async {
-    final request = context.read<PickImageViewModel>().createColorizeImageRequest();
+    final request = await context.read<PickImageViewModel>().createImageRequest(
+          authViewModel: context.read<AuthViewModel>(),
+          context.read<HomeViewModel>().state.appAction,
+        ) as ColorizeImageRequest?;
     if (request != null) {
-      await context.read<ShowResultViewModel>().colorizeImage(request);
+      await context.read<ShowResultViewModel>().enhanceImage(request);
+    } else {
+      context.read<PickImageViewModel>().updateState(hasError: true);
+    }
+  }
+
+  Future<void> _deblurIt(BuildContext context) async {
+    final request = await context.read<PickImageViewModel>().createImageRequest(
+          authViewModel: context.read<AuthViewModel>(),
+          context.read<HomeViewModel>().state.appAction,
+        ) as DeblurImageRequest?;
+    if (request != null) {
+      await context.read<ShowResultViewModel>().enhanceImage(request);
     } else {
       context.read<PickImageViewModel>().updateState(hasError: true);
     }
@@ -27,47 +44,61 @@ class ShowResultView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<ShowResultViewModel, ShowResultViewDataHolder>(
-      listener: (context, state) {
-        switch (state.colorizedImageResultState) {
-          case null:
-            break;
-          case ColorizedImageOnLoading():
-            AppLoaderOverlayManager.showOverlay(
-              widget: AppLottiePlayer(path: AppAssetManager.loadingLottie),
-            );
-            break;
-          case ColorizedImageOnError(error: _):
-            AppLoaderOverlayManager.hideOverlay();
-            showDialog(
-              context: context,
-              builder: (context) => ColorizedImageResultErrorDialog(
-                onTryAgain: () async {
-                  getIt<AppNavigator>().goBack(context);
-                  await _colorizeIt(context);
-                },
-                onCancel: () {
-                  getIt<AppNavigator>().goBack(context);
+    return BlocBuilder<HomeViewModel, HomeViewDataHolder>(
+      buildWhen: (previous, current) => previous.appAction != current.appAction,
+      builder: (context, state) {
+        switch (state.appAction) {
+          case AppAction.colorizeImage:
+            return ColorizeImageResultView(
+              onErrorTryAgain: () async => await _colorizeIt(context),
+              child: AppActionsView(
+                pickedImage: pickedImage,
+                actions: {
+                  AppAction.colorizeImage: () async => await _colorizeIt(context),
+                  AppAction.deblurImage: () async => await _deblurIt(context),
                 },
               ),
             );
-            break;
-          case ColorizedImageOnLoaded(result: final result):
-            AppLoaderOverlayManager.hideOverlay();
-            showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              isDismissible: false,
-              useSafeArea: true,
-              builder: (context) => ColorizedImageResultSheet(result: result),
+
+          case AppAction.deblurImage:
+            return DeblurImageResultView(
+              onErrorTryAgain: () async => await _deblurIt(context),
+              child: AppActionsView(
+                pickedImage: pickedImage,
+                actions: {
+                  AppAction.colorizeImage: () async => await _colorizeIt(context),
+                  AppAction.deblurImage: () async => await _deblurIt(context),
+                },
+              ),
             );
-            break;
         }
       },
-      child: Column(
-        spacing: AppSizer.scaleHeight(32),
-        children: [
-          Expanded(
+    );
+  }
+}
+
+class AppActionsView extends StatelessWidget {
+  const AppActionsView({
+    super.key,
+    required this.pickedImage,
+    required this.actions,
+  });
+
+  final Map<AppAction, AsyncCallback> actions;
+  final AppPickedImage pickedImage;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      spacing: AppSizer.scaleHeight(32),
+      children: [
+        Expanded(
+          child: GestureDetector(
+            onTap: () async {
+              final appAction = context.read<HomeViewModel>().state.appAction;
+
+              await context.read<PickImageViewModel>().pickImage(appAction: appAction);
+            },
             child: Align(
               alignment: Alignment.center,
               child: Image.memory(
@@ -75,17 +106,38 @@ class ShowResultView extends StatelessWidget {
               ),
             ),
           ),
-          ElevatedButton(
-            onPressed: () async {
-              await _colorizeIt(context);
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: BlocBuilder<HomeViewModel, HomeViewDataHolder>(
+            buildWhen: (previous, current) => previous.appAction != current.appAction,
+            builder: (context, state) {
+              return AnimatedSwitcher(
+                duration: Durations.medium1,
+                child: switch (state.appAction) {
+                  AppAction.colorizeImage => AppPrimaryButton(
+                      key: ValueKey(state.appAction),
+                      onPressed: () async {
+                        await actions[state.appAction]!();
+                      },
+                      localizedKey: AppLocalizedKeys.colorizeIt,
+                    ),
+                  AppAction.deblurImage => AppPrimaryButton(
+                      key: ValueKey(state.appAction),
+                      localizedKey: AppLocalizedKeys.deblurIt,
+                      onPressed: () async {
+                        await actions[state.appAction]!();
+                      },
+                    ),
+                },
+              );
             },
-            child: Text("Colorize it"),
           ),
-          SizedBox(
-            height: AppSizer.scaleHeight(32),
-          ),
-        ],
-      ),
+        ),
+        SizedBox(
+          height: AppSizer.scaleHeight(32),
+        ),
+      ],
     );
   }
 }

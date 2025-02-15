@@ -4,7 +4,10 @@ import 'package:photo_enhancer/common/helpers/app_asset_manager.dart';
 import 'package:photo_enhancer/common/widgets/app_lottie_player.dart';
 import 'package:photo_enhancer/common/widgets/app_text.dart';
 import 'package:photo_enhancer/core/enums/app_localized_keys.dart';
+import 'package:photo_enhancer/core/theme/app_theme.dart';
+import 'package:photo_enhancer/core/widgets/app_snackbar_manager.dart';
 import 'package:photo_enhancer/features/colorize-image/pick_image_view_model.dart';
+import 'package:photo_enhancer/features/home/home_view_model.dart';
 import 'package:photo_enhancer/features/show-result/show_result_view.dart';
 
 class PickImageView extends StatelessWidget {
@@ -16,9 +19,10 @@ class PickImageView extends StatelessWidget {
       listenWhen: (previous, current) => previous.hasError != current.hasError,
       listener: (context, state) {
         if (state.hasError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: AppText(AppLocalizedKeys.somethingWentWrong),
+          AppSnackbarManager.show(
+            content: AppText(
+              AppLocalizedKeys.somethingWentWrong,
+              color: AppTheme.textColorDark,
             ),
           );
         }
@@ -29,13 +33,15 @@ class PickImageView extends StatelessWidget {
             children: [
               GestureDetector(
                 onTap: () async {
-                  await context.read<PickImageViewModel>().pickImage();
+                  final appAction = context.read<HomeViewModel>().state.appAction;
+
+                  await context.read<PickImageViewModel>().pickImage(appAction: appAction);
                 },
                 child: AppLottiePlayer(
                   path: AppAssetManager.tapToPickLottie,
                 ),
               ),
-              Text("Tap to pick image"),
+              AppText(AppLocalizedKeys.tapToPickImage),
             ],
           );
         }

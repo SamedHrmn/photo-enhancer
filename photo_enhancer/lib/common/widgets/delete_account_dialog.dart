@@ -1,5 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:photo_enhancer/common/widgets/app_primary_button.dart';
+import 'package:photo_enhancer/common/widgets/app_text.dart';
+import 'package:photo_enhancer/core/enums/app_localized_keys.dart';
 import 'package:photo_enhancer/core/navigation/app_navigator.dart';
 import 'package:photo_enhancer/locator.dart';
 
@@ -18,21 +21,29 @@ class DeleteAccountDialog extends StatelessWidget {
         Icons.warning,
         color: Colors.red,
       ),
-      title: Text("Account Deletion"),
+      title: AppText(
+        AppLocalizedKeys.accountDeletionTitle,
+        textAlign: TextAlign.center,
+      ),
       actionsAlignment: MainAxisAlignment.center,
-      content: Text("This operation cannot be undone. Can you confirm to delete your account?"),
+      content: AppText(
+        AppLocalizedKeys.accountDeletionWarning,
+        textAlign: TextAlign.center,
+      ),
+      actionsOverflowButtonSpacing: 16,
       actions: [
-        ElevatedButton(
+        AppPrimaryButton(
+          variant: AppPrimaryButtonVariant.negativeVariant,
           onPressed: () async {
             await onConfirm();
           },
-          child: Text("Im sure"),
+          localizedKey: AppLocalizedKeys.imSure,
         ),
-        ElevatedButton(
+        AppPrimaryButton(
           onPressed: () {
             getIt<AppNavigator>().goBack(context);
           },
-          child: Text("Cancel"),
+          localizedKey: AppLocalizedKeys.cancel,
         ),
       ],
     );

@@ -18,7 +18,7 @@ import 'package:photo_enhancer/features/auth/viewmodel/auth_view_model.dart';
 import 'package:photo_enhancer/features/auth/viewmodel/auth_view_state.dart';
 import 'package:photo_enhancer/features/colorize-image/pick_image_view_model.dart';
 import 'package:photo_enhancer/features/home/home_view_model.dart';
-import 'package:photo_enhancer/features/show-result/colorize_image_repository.dart';
+import 'package:photo_enhancer/features/show-result/photo_enhancer_repository.dart';
 import 'package:photo_enhancer/features/show-result/show_result_view_model.dart';
 import 'package:photo_enhancer/locator.dart';
 
@@ -56,8 +56,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => ShowResultViewModel(
-            colorizeImageRepository: getIt<ColorizeImageRepository>(),
+            colorizeImageRepository: getIt<PhotoEnhancerRepository>(),
             appFileManager: getIt<AppFileManager>(),
+            permissionManager: getIt<AppPermissionManager>(),
           ),
         ),
         BlocProvider(
@@ -76,7 +77,12 @@ class MyApp extends StatelessWidget {
         darkTheme: AppTheme.darkTheme,
         builder: (context, child) => LoaderOverlay(
           child: child!,
-          overlayWidgetBuilder: (progress) => AppLoaderOverlay(),
+          overlayWidgetBuilder: (progress) => AppLoaderOverlay(
+            globalKey: getIt<AppNavigator>().overlayKey,
+            onHidingAnimationComplete: () {
+              getIt<AppNavigator>().navigatorKey.currentContext?.loaderOverlay.hide();
+            },
+          ),
         ),
         onGenerateRoute: (settings) {
           switch (RouteEnum.fromPath(settings.name!)) {
@@ -104,6 +110,8 @@ class InitialView extends StatefulWidget {
 class _InitialViewState extends BaseStatefullWidget<InitialView> {
   @override
   Future<void> onInitAsync() async {
+    AppInitializer.hideSplash();
+
     AppSizer.init(context, figmaWidth: 390, figmaHeight: 844);
 
     final authViewModel = context.read<AuthViewModel>();
