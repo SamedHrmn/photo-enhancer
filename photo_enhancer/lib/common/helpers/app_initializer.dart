@@ -7,6 +7,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:photo_enhancer/common/helpers/app_package_manager.dart';
 import 'package:photo_enhancer/core/enums/env_keys.dart';
+import 'package:photo_enhancer/features/auth/auth_video_player.dart';
 import 'package:photo_enhancer/locator.dart';
 
 class AppInitializer {
@@ -16,15 +17,21 @@ class AppInitializer {
     final binding = WidgetsFlutterBinding.ensureInitialized();
     FlutterNativeSplash.preserve(widgetsBinding: binding);
 
-    await EasyLocalization.ensureInitialized();
-    await dotenv.load(fileName: kDebugMode ? '.env.development' : '.env.production');
+    await Future.wait([
+      EasyLocalization.ensureInitialized(),
+      dotenv.load(fileName: kDebugMode ? '.env.development' : '.env.production'),
+    ]);
+
     await Firebase.initializeApp();
     await FirebaseAppCheck.instance.activate(
       androidProvider: kDebugMode ? AndroidProvider.debug : AndroidProvider.playIntegrity,
     );
     await setupLocator();
 
-    await getIt<AppPackageManager>().initialize();
+    await Future.wait([
+      AuthVideoController().initialize(),
+      getIt<AppPackageManager>().initialize(),
+    ]);
   }
 
   static String getStringEnv(EnvKeys key) {

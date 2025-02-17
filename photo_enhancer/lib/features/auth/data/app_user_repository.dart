@@ -4,11 +4,14 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:photo_enhancer/common/helpers/app_initializer.dart';
 import 'package:photo_enhancer/common/helpers/photo_enhancer_channel_helper.dart';
+import 'package:photo_enhancer/common/helpers/shared_pref_manager.dart';
 import 'package:photo_enhancer/core/api/dio_api_client.dart';
 import 'package:photo_enhancer/core/enums/env_keys.dart';
+import 'package:photo_enhancer/core/enums/shared_pref_keys.dart';
 import 'package:photo_enhancer/features/auth/data/create_user_response.dart';
 import 'package:photo_enhancer/features/auth/data/get_user_data_response.dart';
 import 'package:photo_enhancer/features/auth/data/verify_integrity_response.dart';
+import 'package:photo_enhancer/locator.dart';
 
 class AppUserRepository {
   final DioApiClient dioApiClient;
@@ -103,8 +106,13 @@ class AppUserRepository {
       if (response == null) return null;
 
       return GetUserDataResponse.fromMap(response);
-    } catch (e) {
+    } on PhotoEnhancerApiException catch (e) {
       log(e.toString(), error: e);
+
+      if (e is UserDataNotFound) {
+        getIt<SharedPrefManager>().setString(SharedPrefKeys.googleId, "");
+      }
+
       return null;
     }
   }

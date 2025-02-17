@@ -107,6 +107,10 @@ class AuthViewModel extends Cubit<AuthViewDataHolder> {
           appUser: AppUser.fromResponse(userDataResponse),
           signInStatus: SignInStatus.success,
         );
+      } else {
+        updateState(
+          signInStatus: SignInStatus.error,
+        );
       }
     }
   }
