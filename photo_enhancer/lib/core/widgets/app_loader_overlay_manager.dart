@@ -9,11 +9,13 @@ class AppLoaderOverlayManager {
   const AppLoaderOverlayManager();
 
   static void showOverlay({Widget? widget}) {
-    getIt<AppNavigator>().navigatorKey.currentContext?.loaderOverlay.show();
+    getIt<AppNavigator>().navigatorKey.currentContext!.loaderOverlay.show();
   }
 
   static void hideOverlay() {
-    getIt<AppNavigator>().overlayKey.currentState?.hideOverlay();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getIt<AppNavigator>().overlayKey.currentState?.hideOverlay();
+    });
   }
 }
 
@@ -21,6 +23,7 @@ class AppLoaderOverlay extends StatefulWidget {
   const AppLoaderOverlay({
     this.customIndicator,
     required this.globalKey,
+    this.child,
     this.onHidingAnimationComplete,
     this.animationDuration = const Duration(milliseconds: 300),
   }) : super(key: globalKey);
@@ -29,6 +32,7 @@ class AppLoaderOverlay extends StatefulWidget {
   final GlobalKey<AppLoaderOverlayState> globalKey;
   final VoidCallback? onHidingAnimationComplete;
   final Duration animationDuration;
+  final Widget? child;
 
   @override
   AppLoaderOverlayState createState() => AppLoaderOverlayState();
@@ -59,25 +63,25 @@ class AppLoaderOverlayState extends State<AppLoaderOverlay> with TickerProviderS
 
   @override
   Widget build(BuildContext context) {
-    return FadeTransition(
-      opacity: _opacityAnimation,
-      child: Stack(
-        children: [
-          Container(
-            color: Colors.black.withValues(alpha: 0.5),
+    return widget.child ??
+        FadeTransition(
+          opacity: _opacityAnimation,
+          child: Stack(
+            children: [
+              Container(
+                color: Colors.black.withValues(alpha: 0.5),
+              ),
+              Center(
+                child: widget.customIndicator ?? AppLottiePlayer(path: AppAssetManager.loadingLottie),
+              ),
+            ],
           ),
-          Center(
-            child: widget.customIndicator ?? AppLottiePlayer(path: AppAssetManager.loadingLottie),
-          ),
-        ],
-      ),
-    );
+        );
   }
 
-  void hideOverlay() {
-    _controller.reverse().then((_) {
-      widget.onHidingAnimationComplete?.call();
-    });
+  Future<void> hideOverlay() async {
+    await _controller.reverse();
+    widget.onHidingAnimationComplete?.call();
   }
 
   @override

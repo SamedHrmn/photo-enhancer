@@ -17,6 +17,8 @@
     "imSure": "Im sure",
     "accountDeletionTitle": "Account Deletion",
     "accountDeletionWarning": "This operation cannot be undone. Can you confirm to delete your account?",
+    "signInWithGoogle": "Sign in With Google",
+    "authPolicyAgreement": "By logging in you agree to {}",
     "tooltips": {
         "colorizeImage": "Colorize Mode can colorize/recolor\nblack and white images to back real life.",
         "deblurImage": "Deblur Mode can restore\nhigh-quality images from\nlow-quality images (e.g., downscaled,\nnoisy and compressed images)."

@@ -80,7 +80,7 @@ class MyApp extends StatelessWidget {
           overlayWidgetBuilder: (progress) => AppLoaderOverlay(
             globalKey: getIt<AppNavigator>().overlayKey,
             onHidingAnimationComplete: () {
-              getIt<AppNavigator>().navigatorKey.currentContext?.loaderOverlay.hide();
+              getIt<AppNavigator>().navigatorKey.currentContext!.loaderOverlay.hide();
             },
           ),
         ),

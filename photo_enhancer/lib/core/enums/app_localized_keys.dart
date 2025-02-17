@@ -31,6 +31,8 @@ enum AppLocalizedKeys {
   imSure,
   accountDeletionTitle,
   accountDeletionWarning,
+  signInWithGoogle,
+  authPolicyAgreement,
   okay;
 
   String toLocalized(BuildContext context, {List<String>? args}) {
@@ -53,6 +55,8 @@ enum AppLocalizedKeys {
       case AppLocalizedKeys.imSure:
       case AppLocalizedKeys.accountDeletionTitle:
       case AppLocalizedKeys.accountDeletionWarning:
+      case AppLocalizedKeys.signInWithGoogle:
+      case AppLocalizedKeys.authPolicyAgreement:
         return name.tr(context: context, args: args);
       case AppLocalizedKeys.actionMenuPrivacyPolicy:
         return 'actionMenu.privacyPolicy'.tr(context: context, args: args);
