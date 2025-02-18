@@ -20,6 +20,7 @@
     "signInWithGoogle": "Sign in With Google",
     "authPolicyAgreement": "By logging in you agree to {}",
     "userDataNotFoundErrorText": "Error happened during login. Please try again.",
+    "unsupportedFileTypeErrorText": "Unsupported file types. Please pick another file.",
     "tooltips": {
         "colorizeImage": "Colorize Mode can colorize/recolor\nblack and white images to back real life.",
         "deblurImage": "Deblur Mode can restore\nhigh-quality images from\nlow-quality images (e.g., downscaled,\nnoisy and compressed images)."

@@ -20,6 +20,7 @@
     "signInWithGoogle": "Google ile Giriş Yap",
     "authPolicyAgreement": "Giriş yaparak {}'nı kabul etmiş olursunuz.",
     "userDataNotFoundErrorText": "Giriş sırasında bir hata oluştu. Tekrar deneyiniz.",
+    "unsupportedFileTypeErrorText": "Desteklenmeyen dosya formatı. Lütfen başka bir dosya deneyin.",
     "tooltips": {
         "colorizeImage": "Renklendirme Modu, siyah beyaz görüntüleri\ngerçek hayata döndürecek şekilde\nrenklendirebilir/yeniden renklendirebilir.",
         "deblurImage": "Bulanıklığı Azaltma Modu,\ndüşük kaliteli görüntülerden (ör.\nküçültülmüş, gürültülü ve sıkıştırılmış görüntüler)\nyüksek kaliteli görüntüler\n oluşturabilir."

@@ -16,7 +16,7 @@ class PickImageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<PickImageViewModel, PickImageViewDataHolder>(
-      listenWhen: (previous, current) => previous.hasError != current.hasError,
+      listenWhen: (previous, current) => (previous.hasError != current.hasError) || (previous.showUnsupportedFileError != current.showUnsupportedFileError),
       listener: (context, state) {
         if (state.hasError) {
           AppSnackbarManager.show(
@@ -25,6 +25,17 @@ class PickImageView extends StatelessWidget {
               color: AppTheme.textColorDark,
             ),
           );
+          context.read<PickImageViewModel>().updateState(hasError: false);
+        }
+
+        if (state.showUnsupportedFileError) {
+          AppSnackbarManager.show(
+            content: AppText(
+              AppLocalizedKeys.unsupportedFileTypeErrorText,
+              color: AppTheme.textColorDark,
+            ),
+          );
+          context.read<PickImageViewModel>().updateState(showUnsupportedFileError: false);
         }
       },
       builder: (context, state) {

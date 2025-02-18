@@ -20,11 +20,13 @@ class PickImageViewModel extends Cubit<PickImageViewDataHolder> {
     AppPickedImage? appPickedImage,
     CompressImageState? compressImageState,
     bool? hasError,
+    bool? showUnsupportedFileError,
   }) {
     emit(state.copyWith(
       appPickedImage: appPickedImage,
       pickedImageCompressingState: compressImageState,
       hasError: hasError,
+      showUnsupportedFileError: showUnsupportedFileError,
     ));
   }
 
@@ -33,8 +35,14 @@ class PickImageViewModel extends Cubit<PickImageViewDataHolder> {
   }
 
   Future<void> pickImage({required AppAction appAction}) async {
-    final image = await appFileManager.pickImage();
-    if (image == null) return;
+    final (image, ext) = await appFileManager.pickImage();
+
+    if (ext == PickedImageFormat.unsupported) {
+      updateState(showUnsupportedFileError: true);
+      return;
+    } else if (image == null) {
+      return;
+    }
 
     updateState(
       appPickedImage: AppPickedImage(
@@ -108,11 +116,13 @@ class PickImageViewDataHolder extends BaseDataHolder {
   final AppPickedImage? appPickedImage;
   final CompressImageState pickedImageCompressingState;
   final bool hasError;
+  final bool showUnsupportedFileError;
 
   const PickImageViewDataHolder({
     this.appPickedImage,
     this.pickedImageCompressingState = const CompressOnInitial(),
     this.hasError = false,
+    this.showUnsupportedFileError = false,
   });
 
   @override
@@ -120,16 +130,23 @@ class PickImageViewDataHolder extends BaseDataHolder {
     AppPickedImage? appPickedImage,
     CompressImageState? pickedImageCompressingState,
     bool? hasError,
+    bool? showUnsupportedFileError,
   }) {
     return PickImageViewDataHolder(
       appPickedImage: appPickedImage ?? this.appPickedImage,
       pickedImageCompressingState: pickedImageCompressingState ?? this.pickedImageCompressingState,
       hasError: hasError ?? this.hasError,
+      showUnsupportedFileError: showUnsupportedFileError ?? this.showUnsupportedFileError,
     );
   }
 
   @override
-  List<Object?> get props => [appPickedImage];
+  List<Object?> get props => [
+        appPickedImage,
+        pickedImageCompressingState,
+        hasError,
+        showUnsupportedFileError,
+      ];
 }
 
 class AppPickedImage extends Equatable {

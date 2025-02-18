@@ -96,10 +96,19 @@ class AppFileManager {
     return base64Decode(base64);
   }
 
-  Future<XFile?> pickImage() async {
+  Future<(XFile?, PickedImageFormat?)> pickImage() async {
     final picker = ImagePicker();
 
-    return picker.pickImage(source: ImageSource.gallery);
+    final file = await picker.pickImage(source: ImageSource.gallery);
+    if (file != null) {
+      final ext = determineFileExtFromPath(file.path);
+      if (ext == PickedImageFormat.unsupported) {
+        return (null, ext);
+      } else {
+        return (file, null);
+      }
+    }
+    return (null, null);
   }
 
   Future<void> compressImage(
