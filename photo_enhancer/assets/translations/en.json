@@ -21,6 +21,8 @@
     "authPolicyAgreement": "By logging in you agree to {}",
     "userDataNotFoundErrorText": "Error happened during login. Please try again.",
     "unsupportedFileTypeErrorText": "Unsupported file types. Please pick another file.",
+    "errorVerifyDevice": "Error occured when trying to verify your device. Try again later.",
+    "rejectedVerifyDevice": "Your device cannot verified, please contact to support.",
     "tooltips": {
         "colorizeImage": "Colorize Mode can colorize/recolor\nblack and white images to back real life.",
         "deblurImage": "Deblur Mode can restore\nhigh-quality images from\nlow-quality images (e.g., downscaled,\nnoisy and compressed images)."

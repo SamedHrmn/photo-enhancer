@@ -35,6 +35,8 @@ enum AppLocalizedKeys {
   authPolicyAgreement,
   userDataNotFoundErrorText,
   unsupportedFileTypeErrorText,
+  errorVerifyDevice,
+  rejectedVerifyDevice,
   okay;
 
   String toLocalized(BuildContext context, {List<String>? args}) {
@@ -61,6 +63,8 @@ enum AppLocalizedKeys {
       case AppLocalizedKeys.authPolicyAgreement:
       case AppLocalizedKeys.userDataNotFoundErrorText:
       case AppLocalizedKeys.unsupportedFileTypeErrorText:
+      case AppLocalizedKeys.errorVerifyDevice:
+      case AppLocalizedKeys.rejectedVerifyDevice:
         return name.tr(context: context, args: args);
       case AppLocalizedKeys.actionMenuPrivacyPolicy:
         return 'actionMenu.privacyPolicy'.tr(context: context, args: args);

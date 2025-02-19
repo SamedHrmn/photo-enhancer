@@ -8,6 +8,8 @@ import 'package:photo_enhancer/common/helpers/app_initializer.dart';
 import 'package:photo_enhancer/common/helpers/app_permission_manager.dart';
 import 'package:photo_enhancer/common/helpers/app_sizer.dart';
 import 'package:photo_enhancer/common/helpers/shared_pref_manager.dart';
+import 'package:photo_enhancer/common/widgets/app_text.dart';
+import 'package:photo_enhancer/core/enums/app_localized_keys.dart';
 import 'package:photo_enhancer/core/enums/route_enum.dart';
 import 'package:photo_enhancer/core/navigation/app_navigator.dart';
 import 'package:photo_enhancer/core/theme/app_theme.dart';
@@ -129,34 +131,30 @@ class _InitialViewState extends BaseStatefullWidget<InitialView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocConsumer<AuthViewModel, AuthViewDataHolder>(
-        listenWhen: (previous, current) => previous.verifyingStatus != current.verifyingStatus,
-        listener: (context, state) {
-          if (state.verifyingStatus == VerifyingStatus.success) {
-            getIt<AppNavigator>().navigateTo(RouteEnum.authView);
-          }
-        },
-        buildWhen: (previous, current) => previous.verifyingStatus != current.verifyingStatus,
-        builder: (context, state) {
-          switch (state.verifyingStatus) {
-            case VerifyingStatus.initial:
-            case VerifyingStatus.loading:
-              return Center(
-                child: CircularProgressIndicator(),
-              );
+      body: Center(
+        child: BlocConsumer<AuthViewModel, AuthViewDataHolder>(
+          listenWhen: (previous, current) => previous.verifyingStatus != current.verifyingStatus,
+          listener: (context, state) {
+            if (state.verifyingStatus == VerifyingStatus.success) {
+              getIt<AppNavigator>().navigateTo(RouteEnum.authView);
+            }
+          },
+          buildWhen: (previous, current) => previous.verifyingStatus != current.verifyingStatus,
+          builder: (context, state) {
+            switch (state.verifyingStatus) {
+              case VerifyingStatus.initial:
+              case VerifyingStatus.loading:
+                return CircularProgressIndicator();
 
-            case VerifyingStatus.error:
-              return Center(
-                child: Text("Error occured when trying to verify your device. Try again later."),
-              );
-            case VerifyingStatus.rejected:
-              return Center(
-                child: Text("Your device cannot verified, please contact to support"),
-              );
-            case VerifyingStatus.success:
-              return const SizedBox.shrink();
-          }
-        },
+              case VerifyingStatus.error:
+                return AppText(AppLocalizedKeys.errorVerifyDevice);
+              case VerifyingStatus.rejected:
+                return AppText(AppLocalizedKeys.rejectedVerifyDevice);
+              case VerifyingStatus.success:
+                return const SizedBox.shrink();
+            }
+          },
+        ),
       ),
     );
   }
