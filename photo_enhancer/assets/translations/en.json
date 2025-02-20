@@ -1,0 +1,46 @@
+{
+    "appName": "Photo Enhancer",
+    "okay": "Okay",
+    "somethingWentWrong": "Something went wrong",
+    "discard": "Discard",
+    "save": "Save",
+    "openSettings": "Open Settings",
+    "noContinue": "No, Continue",
+    "storagePermissionNeeded": "Storage permission is needed to download the photo to your device.",
+    "imageSavedSuccessfullyTo": "Image saved successfully to: {}",
+    "tapToPickImage": "Tap to pick image",
+    "colorizeIt": "Back it to life!",
+    "deblurIt": "Deblur it!",
+    "imageResultDialogErrorText": "Your photo coins will only be spent after a successful transaction. Don't worry.",
+    "tryAgain": "Try again",
+    "cancel": "Cancel",
+    "imSure": "Im sure",
+    "accountDeletionTitle": "Account Deletion",
+    "accountDeletionWarning": "This operation cannot be undone. Can you confirm to delete your account?",
+    "signInWithGoogle": "Sign in With Google",
+    "authPolicyAgreement": "By logging in you agree to {}",
+    "userDataNotFoundErrorText": "Error happened during login. Please try again.",
+    "unsupportedFileTypeErrorText": "Unsupported file types. Please pick another file.",
+    "errorVerifyDevice": "Error occured when trying to verify your device. Try again later.",
+    "rejectedVerifyDevice": "Your device cannot verified, please contact to support.",
+    "tooltips": {
+        "colorizeImage": "Colorize Mode can colorize/recolor\nblack and white images to back real life.",
+        "deblurImage": "Deblur Mode can restore\nhigh-quality images from\nlow-quality images (e.g., downscaled,\nnoisy and compressed images)."
+    },
+    "appAction": {
+        "colorizeImage": "Colorize Mode",
+        "deblurImage": "Deblur Mode"
+    },
+    "continueDiscardDialog": {
+        "title": "Are you sure?",
+        "content": "Unsaved photos will be destroyed. Are you sure you want to continue without saving?",
+        "action1": "Save",
+        "action2": "Continue"
+    },
+    "actionMenu": {
+        "privacyPolicy": "Privacy Policy",
+        "licences": "Licences",
+        "deleteAccount": "Delete Account",
+        "signOut": "Sign Out"
+    }
+}

@@ -1,0 +1,46 @@
+{
+    "appName": "Photo Enhancer",
+    "okay": "Tamam",
+    "somethingWentWrong": "Bir hata oluştu.",
+    "discard": "Yok et",
+    "save": "Save",
+    "openSettings": "Ayarlar'a Git",
+    "noContinue": "Devam Et",
+    "storagePermissionNeeded": "Fotoğrafları cihazınıza kaydedebilmemiz için depolama izni vermeniz gerekli.",
+    "imageSavedSuccessfullyTo": "Fotoğraf başarıyla şu konuma kaydedildi: {}",
+    "tapToPickImage": "Resim seçmek için bas",
+    "colorizeIt": "Hayata döndür!",
+    "deblurIt": "Bulanıklığı yok et!",
+    "imageResultDialogErrorText": "Foto coinleriniz yalnızca başarılı işlemler sonrasında eksilir.",
+    "tryAgain": "Tekrar dene",
+    "cancel": "İptal",
+    "imSure": "Eminim",
+    "accountDeletionTitle": "Hesap Silme",
+    "accountDeletionWarning": "Bu işlem geri alınamaz. Hesabınızı silmeyi onaylıyor musunuz?",
+    "signInWithGoogle": "Google ile Giriş Yap",
+    "authPolicyAgreement": "Giriş yaparak {}'nı kabul etmiş olursunuz.",
+    "userDataNotFoundErrorText": "Giriş sırasında bir hata oluştu. Tekrar deneyiniz.",
+    "unsupportedFileTypeErrorText": "Desteklenmeyen dosya formatı. Lütfen başka bir dosya deneyin.",
+    "errorVerifyDevice": "Cihaz doğrulaması esnasında hata oluştu. Lütfen tekrar deneyin.",
+    "rejectedVerifyDevice": "Cihaz doğrulanamadı. Lütfen destek ile iletişime geçin.",
+    "tooltips": {
+        "colorizeImage": "Renklendirme Modu, siyah beyaz görüntüleri\ngerçek hayata döndürecek şekilde\nrenklendirebilir/yeniden renklendirebilir.",
+        "deblurImage": "Bulanıklığı Azaltma Modu,\ndüşük kaliteli görüntülerden (ör.\nküçültülmüş, gürültülü ve sıkıştırılmış görüntüler)\nyüksek kaliteli görüntüler\n oluşturabilir."
+    },
+    "appAction": {
+        "colorizeImage": "Colorize Mode",
+        "deblurImage": "Deblur Mode"
+    },
+    "continueDiscardDialog": {
+        "title": "Emin misiniz?",
+        "content": "Kaydedilmeyen fotoğraflar yok edilecek. Kaydetmeden devam etmek istiyor musunuz?",
+        "action1": "Kaydet",
+        "action2": "Devam Et"
+    },
+    "actionMenu": {
+        "privacyPolicy": "Gizlilik Politikası",
+        "licences": "Lisanslar",
+        "deleteAccount": "Hesabımı Sil",
+        "signOut": "Çıkış Yap"
+    }
+}
