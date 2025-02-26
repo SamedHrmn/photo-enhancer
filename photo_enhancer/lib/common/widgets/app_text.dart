@@ -5,6 +5,7 @@ import 'package:photo_enhancer/core/theme/app_theme.dart';
 class AppText extends StatelessWidget {
   const AppText(
     this.localizedKey, {
+    this.text,
     this.localizedArg,
     super.key,
     this.size,
@@ -14,7 +15,8 @@ class AppText extends StatelessWidget {
     this.hasOverflow = false,
   });
 
-  final AppLocalizedKeys localizedKey;
+  final String? text;
+  final AppLocalizedKeys? localizedKey;
   final List<String>? localizedArg;
   final double? size;
   final FontWeight fontWeight;
@@ -25,7 +27,7 @@ class AppText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      localizedKey.toLocalized(context, args: localizedArg),
+      text ?? localizedKey!.toLocalized(context, args: localizedArg),
       overflow: hasOverflow ? TextOverflow.ellipsis : null,
       textAlign: textAlign,
       style: Theme.of(context).textTheme.bodyMedium?.copyWith(

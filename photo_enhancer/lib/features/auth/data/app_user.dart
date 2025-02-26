@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+
 import 'package:photo_enhancer/features/auth/data/get_user_data_response.dart';
 
 class AppUser extends Equatable {
@@ -32,6 +33,20 @@ class AppUser extends Equatable {
 
   @override
   List<Object?> get props => [googleId, androidId, credit, purchases];
+
+  AppUser copyWith({
+    String? googleId,
+    String? androidId,
+    int? credit,
+    List<Purchase>? purchases,
+  }) {
+    return AppUser(
+      googleId: googleId ?? this.googleId,
+      androidId: androidId ?? this.androidId,
+      credit: credit ?? this.credit,
+      purchases: purchases ?? this.purchases,
+    );
+  }
 }
 
 class Purchase extends Equatable {

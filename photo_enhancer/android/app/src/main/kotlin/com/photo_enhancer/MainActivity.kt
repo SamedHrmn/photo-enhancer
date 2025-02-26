@@ -18,8 +18,8 @@ class MainActivity : FlutterActivity() {
         MethodChannel(flutterEngine.dartExecutor, CHANNEL).setMethodCallHandler { call, result ->
             when (call.method) {
                 "getIntegrityToken" -> {
-                    val gcpId = call.arguments as Int
-                    getIntegrityToken(result,gcpId.toLong())
+                    val gcpId = call.arguments as Long
+                    getIntegrityToken(result,gcpId)
                 }
                 "getAndroidId" -> {
                     getAndroidId(result)

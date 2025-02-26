@@ -26,7 +26,7 @@ interface CreateUserResponse {
 
 }
 
-interface UserData {
+export interface UserData {
     googleId: string;
     androidId: string;
     credit: number;
@@ -543,3 +543,36 @@ export async function uploadBase64Image(userId: string, base64String: string, fi
         throw new Error("Failed to upload image");
     }
 }
+
+
+//  Update User Credit
+export const updateUserCredit = onRequest(async (req, res): Promise<any> => {
+    try {
+        if (req.method !== "POST") {
+            return res.status(405).json({ error: "Method Not Allowed" });
+        }
+
+        const { userId, amount } = req.body;
+        if (!userId || typeof userId !== "string" || typeof amount !== "number") {
+            return res.status(400).json({ error: "Missing or invalid userId/amount" });
+        }
+
+        const userRef = db.collection("users").doc(userId);
+        const userDoc = await userRef.get();
+
+        if (!userDoc.exists) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        // Update credit balance
+        const currentCredit = userDoc.data()?.credit ?? 0;
+        const newCredit = currentCredit + amount;
+
+        await userRef.update({ credit: newCredit });
+
+        return res.status(200).json({ success: true, updatedCredit: newCredit });
+    } catch (error) {
+        logger.error("Error updating user credit:", error);
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+});

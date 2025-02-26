@@ -12,7 +12,7 @@ import 'package:photo_enhancer/features/show-result/data/colorize-image/colorize
 import 'package:photo_enhancer/features/show-result/show_result_view_model.dart';
 import 'package:photo_enhancer/locator.dart';
 
-class ColorizeImageResultView extends StatelessWidget {
+class ColorizeImageResultView extends StatefulWidget {
   const ColorizeImageResultView({
     super.key,
     required this.onErrorTryAgain,
@@ -23,11 +23,20 @@ class ColorizeImageResultView extends StatelessWidget {
   final Widget child;
 
   @override
+  State<ColorizeImageResultView> createState() => _ColorizeImageResultViewState();
+}
+
+class _ColorizeImageResultViewState extends State<ColorizeImageResultView> {
+  bool errorDialogOpen = false;
+
+  @override
   Widget build(BuildContext context) {
     return BlocListener<ShowResultViewModel, ShowResultViewDataHolder>(
+      listenWhen: (previous, current) => previous.colorizedImageResultState != current.colorizedImageResultState,
       listener: (context, state) {
         switch (state.colorizedImageResultState) {
           case null:
+          case ColorizeImageOnInitial():
             break;
           case ColorizedImageOnLoading():
             AppLoaderOverlayManager.showOverlay(
@@ -35,19 +44,29 @@ class ColorizeImageResultView extends StatelessWidget {
             );
             break;
           case ColorizedImageOnError(error: _):
+            if (errorDialogOpen) {
+              getIt<AppNavigator>().goBack(context);
+            }
+
+            errorDialogOpen = true;
             AppLoaderOverlayManager.hideOverlay();
+
             showDialog(
               context: context,
               builder: (context) => ImageResultErrorDialog(
                 onTryAgain: () async {
                   getIt<AppNavigator>().goBack(context);
-                  await onErrorTryAgain();
+                  await widget.onErrorTryAgain();
                 },
                 onCancel: () {
                   getIt<AppNavigator>().goBack(context);
                 },
               ),
-            );
+            ).then((_) {
+              errorDialogOpen = false;
+              context.read<ShowResultViewModel>().updateState(colorizedImageState: ColorizeImageOnInitial());
+            });
+
             break;
           case ColorizedImageOnLoaded(result: final result):
             AppLoaderOverlayManager.hideOverlay();
@@ -62,7 +81,7 @@ class ColorizeImageResultView extends StatelessWidget {
             break;
         }
       },
-      child: child,
+      child: widget.child,
     );
   }
 }

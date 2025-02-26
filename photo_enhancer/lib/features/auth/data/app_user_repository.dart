@@ -10,6 +10,8 @@ import 'package:photo_enhancer/core/enums/env_keys.dart';
 import 'package:photo_enhancer/core/enums/shared_pref_keys.dart';
 import 'package:photo_enhancer/features/auth/data/create_user_response.dart';
 import 'package:photo_enhancer/features/auth/data/get_user_data_response.dart';
+import 'package:photo_enhancer/features/auth/data/update_user_credit_request.dart';
+import 'package:photo_enhancer/features/auth/data/update_user_credit_response.dart';
 import 'package:photo_enhancer/features/auth/data/verify_integrity_response.dart';
 import 'package:photo_enhancer/locator.dart';
 
@@ -137,6 +139,24 @@ class AppUserRepository {
     } catch (e) {
       log(e.toString(), error: e);
       return false;
+    }
+  }
+
+  Future<UpdateUserCreditResponse?> updateUserCredit({required UpdateUserCreditRequest request}) async {
+    try {
+      final response = await dioApiClient.post<Map<String, dynamic>>(
+        AppInitializer.getStringEnv(EnvKeys.updateUserCreditUrl),
+        data: request.toJson(),
+      );
+
+      if (response != null) {
+        return UpdateUserCreditResponse.fromJson(response);
+      } else {
+        return UpdateUserCreditResponse(amount: null, success: false);
+      }
+    } catch (e) {
+      log(e.toString(), error: e);
+      return null;
     }
   }
 }

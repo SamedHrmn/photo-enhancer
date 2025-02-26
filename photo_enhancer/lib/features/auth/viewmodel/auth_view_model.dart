@@ -7,6 +7,7 @@ import 'package:photo_enhancer/core/enums/shared_pref_keys.dart';
 import 'package:photo_enhancer/features/auth/data/app_user.dart';
 import 'package:photo_enhancer/features/auth/data/app_user_repository.dart';
 import 'package:photo_enhancer/features/auth/data/create_user_response.dart';
+import 'package:photo_enhancer/features/auth/data/update_user_credit_request.dart';
 import 'package:photo_enhancer/features/auth/data/verify_integrity_response.dart';
 import 'package:photo_enhancer/features/auth/viewmodel/auth_view_state.dart';
 
@@ -31,6 +32,21 @@ class AuthViewModel extends Cubit<AuthViewDataHolder> {
       createUserRequest: createUserRequest,
       signInStatus: signInStatus,
     ));
+  }
+
+  void updateUserCredit(int purchasedAmount, {bool override = false}) {
+    if (override) {
+      updateState(
+        appUser: state.appUser.copyWith(credit: purchasedAmount),
+      );
+      return;
+    }
+
+    final current = state.appUser.credit ?? 0;
+
+    updateState(
+      appUser: state.appUser.copyWith(credit: current + purchasedAmount),
+    );
   }
 
   void clearState() {
@@ -177,5 +193,34 @@ class AuthViewModel extends Cubit<AuthViewDataHolder> {
       await prefManager.setString(SharedPrefKeys.googleId, "");
     }
     return response;
+  }
+
+  Future<void> spendCreditForProcess({
+    required int amount,
+    required void Function(int oldAmount) onSuccess,
+    required void Function() onError,
+    required void Function() hasNoCredit,
+  }) async {
+    // Get current credits
+    final credit = state.appUser.credit!;
+
+    if (credit + amount < 0) {
+      hasNoCredit();
+      return;
+    }
+
+    //Spend credit as 1
+    await appUserRepository.updateUserCredit(
+      request: UpdateUserCreditRequest(userId: state.appUser.googleId!, amount: amount),
+    );
+
+    // Get user data and check credit was spending
+    final userData = await appUserRepository.getUserData(id: state.appUser.googleId!);
+    if (userData != null && credit + amount == userData.credit) {
+      updateUserCredit(amount);
+      onSuccess(credit);
+    } else {
+      onError();
+    }
   }
 }

@@ -17,6 +17,10 @@ sealed class ColorizedImageResultState {
   const ColorizedImageResultState();
 }
 
+class ColorizeImageOnInitial extends ColorizedImageResultState {
+  const ColorizeImageOnInitial() : super();
+}
+
 class ColorizedImageOnLoading extends ColorizedImageResultState {
   const ColorizedImageOnLoading() : super();
 }

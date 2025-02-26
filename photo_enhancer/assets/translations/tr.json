@@ -23,6 +23,9 @@
     "unsupportedFileTypeErrorText": "Desteklenmeyen dosya formatı. Lütfen başka bir dosya deneyin.",
     "errorVerifyDevice": "Cihaz doğrulaması esnasında hata oluştu. Lütfen tekrar deneyin.",
     "rejectedVerifyDevice": "Cihaz doğrulanamadı. Lütfen destek ile iletişime geçin.",
+    "photoCoin": "{} photo coin",
+    "goToPurchase": "{} Satın Almaya İlerle",
+    "purchasedSuccessfully": "{} Satın Alındı",
     "tooltips": {
         "colorizeImage": "Renklendirme Modu, siyah beyaz görüntüleri\ngerçek hayata döndürecek şekilde\nrenklendirebilir/yeniden renklendirebilir.",
         "deblurImage": "Bulanıklığı Azaltma Modu,\ndüşük kaliteli görüntülerden (ör.\nküçültülmüş, gürültülü ve sıkıştırılmış görüntüler)\nyüksek kaliteli görüntüler\n oluşturabilir."

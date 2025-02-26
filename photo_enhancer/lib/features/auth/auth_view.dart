@@ -93,6 +93,7 @@ class _AuthViewState extends BaseStatefullWidget<AuthView> {
                           content: AppText(AppLocalizedKeys.userDataNotFoundErrorText),
                           variant: AppSnackbarVariant.error,
                         );
+                        context.read<AuthViewModel>().updateState(signInStatus: SignInStatus.initial);
                     }
                   },
                   child: AppPrimaryButton(

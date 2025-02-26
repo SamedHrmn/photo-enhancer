@@ -7,6 +7,7 @@ import 'package:photo_enhancer/common/helpers/app_file_manager.dart';
 import 'package:photo_enhancer/common/helpers/app_initializer.dart';
 import 'package:photo_enhancer/common/helpers/app_permission_manager.dart';
 import 'package:photo_enhancer/common/helpers/app_sizer.dart';
+import 'package:photo_enhancer/common/helpers/iap_manager.dart';
 import 'package:photo_enhancer/common/helpers/shared_pref_manager.dart';
 import 'package:photo_enhancer/common/widgets/app_text.dart';
 import 'package:photo_enhancer/core/enums/app_localized_keys.dart';
@@ -20,6 +21,8 @@ import 'package:photo_enhancer/features/auth/viewmodel/auth_view_model.dart';
 import 'package:photo_enhancer/features/auth/viewmodel/auth_view_state.dart';
 import 'package:photo_enhancer/features/colorize-image/pick_image_view_model.dart';
 import 'package:photo_enhancer/features/home/home_view_model.dart';
+import 'package:photo_enhancer/features/paywall/data/photo_coins_repository.dart';
+import 'package:photo_enhancer/features/paywall/paywall_view_model.dart';
 import 'package:photo_enhancer/features/show-result/photo_enhancer_repository.dart';
 import 'package:photo_enhancer/features/show-result/show_result_view_model.dart';
 import 'package:photo_enhancer/locator.dart';
@@ -68,6 +71,12 @@ class MyApp extends StatelessWidget {
             appPermissionManager: getIt<AppPermissionManager>(),
           ),
         ),
+        BlocProvider(
+          create: (context) => PaywallViewModel(
+            iapManager: getIt<IAPManager>(),
+            photoCoinsRepository: getIt<PhotoCoinsRepository>(),
+          ),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -96,7 +105,10 @@ class MyApp extends StatelessWidget {
               return RouteEnum.homeView.toMaterialRoute(settings);
           }
         },
-        home: const InitialView(),
+        home: ScaffoldMessenger(
+          key: getIt<AppNavigator>().scaffoldMessengerKey,
+          child: const InitialView(),
+        ),
       ),
     );
   }

@@ -17,9 +17,11 @@ class AppPrimaryButton extends StatelessWidget {
     required this.onPressed,
     this.variant = AppPrimaryButtonVariant.defaultVariant,
     this.minimumSize,
+    this.localizedKeyArgs,
   });
 
   final AppLocalizedKeys localizedKey;
+  final List<String>? localizedKeyArgs;
   final VoidCallback onPressed;
   final AppPrimaryButtonVariant variant;
   final Size? minimumSize;
@@ -37,7 +39,9 @@ class AppPrimaryButton extends StatelessWidget {
       ),
       child: AppText(
         localizedKey,
+        textAlign: TextAlign.center,
         color: AppTheme.textColorDark,
+        localizedArg: localizedKeyArgs,
       ),
     );
   }

@@ -5,20 +5,24 @@ import 'package:photo_enhancer/features/show-result/data/deblur-image/deblur_ima
 class ShowResultViewDataHolder extends BaseDataHolder {
   final ColorizedImageResultState? colorizedImageResultState;
   final DebluredImageResultState? debluredImageResultState;
+  final bool shouldGoPurchase;
 
   const ShowResultViewDataHolder({
     this.colorizedImageResultState,
     this.debluredImageResultState,
+    this.shouldGoPurchase = false,
   });
 
   @override
   ShowResultViewDataHolder copyWith({
     ColorizedImageResultState? colorizedImageResultState,
     DebluredImageResultState? debluredImageResultState,
+    bool? shouldGoPurchase,
   }) {
     return ShowResultViewDataHolder(
       colorizedImageResultState: colorizedImageResultState ?? this.colorizedImageResultState,
       debluredImageResultState: debluredImageResultState ?? this.debluredImageResultState,
+      shouldGoPurchase: shouldGoPurchase ?? this.shouldGoPurchase,
     );
   }
 
@@ -26,5 +30,6 @@ class ShowResultViewDataHolder extends BaseDataHolder {
   List<Object?> get props => [
         colorizedImageResultState,
         debluredImageResultState,
+        shouldGoPurchase,
       ];
 }

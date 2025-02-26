@@ -6,6 +6,7 @@ import 'package:photo_enhancer/core/widgets/app_loader_overlay_manager.dart';
 class AppNavigator {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   final GlobalKey<AppLoaderOverlayState> overlayKey = GlobalKey<AppLoaderOverlayState>();
+  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
   // Push a new route onto the stack
   void navigateTo(RouteEnum route, {Object? arguments}) {

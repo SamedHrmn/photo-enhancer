@@ -4,10 +4,12 @@ import 'package:photo_enhancer/common/helpers/app_file_manager.dart';
 import 'package:photo_enhancer/common/helpers/app_initializer.dart';
 import 'package:photo_enhancer/common/helpers/app_package_manager.dart';
 import 'package:photo_enhancer/common/helpers/app_permission_manager.dart';
+import 'package:photo_enhancer/common/helpers/iap_manager.dart';
 import 'package:photo_enhancer/common/helpers/shared_pref_manager.dart';
 import 'package:photo_enhancer/core/api/dio_api_client.dart';
 import 'package:photo_enhancer/core/navigation/app_navigator.dart';
 import 'package:photo_enhancer/features/auth/data/app_user_repository.dart';
+import 'package:photo_enhancer/features/paywall/data/photo_coins_repository.dart';
 import 'package:photo_enhancer/features/show-result/photo_enhancer_repository.dart';
 
 final getIt = GetIt.instance;
@@ -41,6 +43,12 @@ Future<void> setupLocator() async {
     PhotoEnhancerRepository(
       appFileManager: getIt<AppFileManager>(),
       sharedPrefManager: getIt<SharedPrefManager>(),
+      dioApiClient: await getIt.getAsync<DioApiClient>(),
+    ),
+  );
+  getIt.registerSingleton<IAPManager>(IAPManager());
+  getIt.registerSingleton<PhotoCoinsRepository>(
+    PhotoCoinsRepository(
       dioApiClient: await getIt.getAsync<DioApiClient>(),
     ),
   );

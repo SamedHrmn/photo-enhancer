@@ -10,12 +10,21 @@ enum AppSnackbarVariant {
 class AppSnackbarManager {
   static void show({
     required Widget content,
+    BuildContext? context,
     AppSnackbarVariant variant = AppSnackbarVariant.defaultVariant,
   }) {
-    final globalContext = getIt<AppNavigator>().navigatorKey.currentContext!;
-    ScaffoldMessenger.of(globalContext).showSnackBar(
+    if (context != null) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        backgroundColor: _getColor(context, variant),
+        content: content,
+      ));
+      return;
+    }
+
+    final scaffoldState = getIt<AppNavigator>().scaffoldMessengerKey.currentState!;
+    scaffoldState.showSnackBar(
       SnackBar(
-        backgroundColor: _getColor(globalContext, variant),
+        backgroundColor: _getColor(scaffoldState.context, variant),
         content: content,
       ),
     );
