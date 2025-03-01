@@ -21,10 +21,10 @@ class AppSnackbarManager {
       return;
     }
 
-    final scaffoldState = getIt<AppNavigator>().scaffoldMessengerKey.currentState!;
-    scaffoldState.showSnackBar(
+    final globalContext = getIt<AppNavigator>().navigatorKey.currentContext!;
+    ScaffoldMessenger.maybeOf(globalContext)?.showSnackBar(
       SnackBar(
-        backgroundColor: _getColor(scaffoldState.context, variant),
+        backgroundColor: _getColor(globalContext, variant),
         content: content,
       ),
     );

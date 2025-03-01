@@ -7,9 +7,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:image/image.dart' as img;
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_enhancer/core/widgets/app_logger.dart';
-import 'package:photo_enhancer/features/colorize-image/pick_image_view_model.dart';
+import 'package:photo_enhancer/features/pick-image/viewmodel/pick_image_state.dart';
 
-// Define callback type for state updates
 typedef ProcessingStateCallback = void Function(CompressImageState state);
 
 sealed class CompressImageState {

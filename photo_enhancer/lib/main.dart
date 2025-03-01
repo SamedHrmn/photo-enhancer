@@ -19,10 +19,10 @@ import 'package:photo_enhancer/core/widgets/app_loader_overlay_manager.dart';
 import 'package:photo_enhancer/features/auth/data/app_user_repository.dart';
 import 'package:photo_enhancer/features/auth/viewmodel/auth_view_model.dart';
 import 'package:photo_enhancer/features/auth/viewmodel/auth_view_state.dart';
-import 'package:photo_enhancer/features/colorize-image/pick_image_view_model.dart';
-import 'package:photo_enhancer/features/home/home_view_model.dart';
+import 'package:photo_enhancer/features/pick-image/viewmodel/pick_image_view_model.dart';
+import 'package:photo_enhancer/features/home/viewmodel/home_view_model.dart';
 import 'package:photo_enhancer/features/paywall/data/photo_coins_repository.dart';
-import 'package:photo_enhancer/features/paywall/paywall_view_model.dart';
+import 'package:photo_enhancer/features/paywall/viewmodel/paywall_view_model.dart';
 import 'package:photo_enhancer/features/show-result/photo_enhancer_repository.dart';
 import 'package:photo_enhancer/features/show-result/show_result_view_model.dart';
 import 'package:photo_enhancer/locator.dart';
@@ -105,10 +105,7 @@ class MyApp extends StatelessWidget {
               return RouteEnum.homeView.toMaterialRoute(settings);
           }
         },
-        home: ScaffoldMessenger(
-          key: getIt<AppNavigator>().scaffoldMessengerKey,
-          child: const InitialView(),
-        ),
+        home: const InitialView(),
       ),
     );
   }

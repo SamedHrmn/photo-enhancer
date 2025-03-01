@@ -11,6 +11,7 @@
     "tapToPickImage": "Resim seçmek için bas",
     "colorizeIt": "Hayata döndür!",
     "deblurIt": "Bulanıklığı yok et!",
+    "faceRestoration": "Yüzü iyileştir",
     "imageResultDialogErrorText": "Foto coinleriniz yalnızca başarılı işlemler sonrasında eksilir.",
     "tryAgain": "Tekrar dene",
     "cancel": "İptal",
@@ -28,11 +29,13 @@
     "purchasedSuccessfully": "{} Satın Alındı",
     "tooltips": {
         "colorizeImage": "Renklendirme Modu, siyah beyaz görüntüleri\ngerçek hayata döndürecek şekilde\nrenklendirebilir/yeniden renklendirebilir.",
-        "deblurImage": "Bulanıklığı Azaltma Modu,\ndüşük kaliteli görüntülerden (ör.\nküçültülmüş, gürültülü ve sıkıştırılmış görüntüler)\nyüksek kaliteli görüntüler\n oluşturabilir."
+        "deblurImage": "Bulanıklığı Azaltma Modu,\ndüşük kaliteli görüntülerden (ör.\nküçültülmüş, gürültülü ve sıkıştırılmış görüntüler)\nyüksek kaliteli görüntüler\n oluşturabilir.",
+        "faceRestoration": "Düşük kaliteli yüz içeren\nfotoğraflarınızı iyileştirir."
     },
     "appAction": {
-        "colorizeImage": "Colorize Mode",
-        "deblurImage": "Deblur Mode"
+        "colorizeImage": "Renklendir",
+        "faceRestoration": "Yüz İyileştir",
+        "deblurImage": "Bulanıklık Gider"
     },
     "continueDiscardDialog": {
         "title": "Emin misiniz?",

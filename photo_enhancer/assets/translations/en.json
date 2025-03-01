@@ -11,6 +11,7 @@
     "tapToPickImage": "Tap to pick image",
     "colorizeIt": "Back it to life!",
     "deblurIt": "Deblur it!",
+    "faceRestoration": "Restore faces",
     "imageResultDialogErrorText": "Your photo coins will only be spent after a successful transaction. Don't worry.",
     "tryAgain": "Try again",
     "cancel": "Cancel",
@@ -28,11 +29,13 @@
     "purchasedSuccessfully": "{} Purchased Successfully",
     "tooltips": {
         "colorizeImage": "Colorize Mode can colorize/recolor\nblack and white images to back real life.",
-        "deblurImage": "Deblur Mode can restore\nhigh-quality images from\nlow-quality images (e.g., downscaled,\nnoisy and compressed images)."
+        "deblurImage": "Deblur Mode can restore\nhigh-quality images from\nlow-quality images (e.g., downscaled,\nnoisy and compressed images).",
+        "faceRestoration": "Restore low quality face\nphotos."
     },
     "appAction": {
         "colorizeImage": "Colorize Mode",
-        "deblurImage": "Deblur Mode"
+        "deblurImage": "Deblur Mode",
+        "faceRestoration": "Face Restoration"
     },
     "continueDiscardDialog": {
         "title": "Are you sure?",

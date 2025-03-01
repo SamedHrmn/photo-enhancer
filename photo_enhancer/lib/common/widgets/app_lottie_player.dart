@@ -7,11 +7,13 @@ class AppLottiePlayer extends StatefulWidget {
     required this.path,
     this.durationMultiplier = 1.0,
     this.height,
+    this.animate = true,
   });
 
   final String path;
   final double? height;
   final double durationMultiplier;
+  final bool animate;
 
   @override
   State<AppLottiePlayer> createState() => _AppLottiePlayerState();
@@ -38,7 +40,10 @@ class _AppLottiePlayerState extends State<AppLottiePlayer> with SingleTickerProv
       controller: controller,
       widget.path,
       height: widget.height,
+      animate: widget.animate,
       onLoaded: (composition) {
+        if (!widget.animate) return;
+
         controller
           ..duration = composition.duration * widget.durationMultiplier
           ..repeat();

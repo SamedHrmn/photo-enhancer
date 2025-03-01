@@ -5,6 +5,7 @@ enum EnvKeys {
   deleteAccountUrl('DELETE_ACCOUNT_URL'),
   colorizeImageUrl('COLORIZE_IMAGE_URL'),
   deblurImageUrl('DEBLUR_IMAGE_URL'),
+  faceRestorationUrl('FACE_RESTORATION_URL'),
   gcpId('GCP_PROJECT_ID'),
   coinsPack1('COINS_PACK_1'),
   coinsPack2('COINS_PACK_2'),

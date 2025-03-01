@@ -5,11 +5,15 @@ import 'package:photo_enhancer/common/helpers/app_permission_manager.dart';
 import 'package:photo_enhancer/core/widgets/app_logger.dart';
 import 'package:photo_enhancer/features/auth/data/update_user_credit_request.dart';
 import 'package:photo_enhancer/features/auth/viewmodel/auth_view_model.dart';
-import 'package:photo_enhancer/features/home/home_view_model.dart';
+import 'package:photo_enhancer/features/home/viewmodel/home_view_model.dart';
+import 'package:photo_enhancer/features/home/viewmodel/home_view_state.dart';
+import 'package:photo_enhancer/features/show-result/data/base_image_request.dart';
 import 'package:photo_enhancer/features/show-result/data/colorize-image/colorize_image_request.dart';
 import 'package:photo_enhancer/features/show-result/data/colorize-image/colorize_image_result_state.dart';
 import 'package:photo_enhancer/features/show-result/data/deblur-image/deblur_image_request.dart';
 import 'package:photo_enhancer/features/show-result/data/deblur-image/deblur_image_result_state.dart';
+import 'package:photo_enhancer/features/show-result/data/face-restoration/face_restoration_request.dart';
+import 'package:photo_enhancer/features/show-result/data/face-restoration/face_restoration_result_state.dart';
 import 'package:photo_enhancer/features/show-result/data/show_result_view_data_holder.dart';
 import 'package:photo_enhancer/features/show-result/photo_enhancer_repository.dart';
 
@@ -27,11 +31,13 @@ class ShowResultViewModel extends Cubit<ShowResultViewDataHolder> {
   void updateState({
     ColorizedImageResultState? colorizedImageState,
     DebluredImageResultState? debluredImageState,
+    FaceRestorationResultState? faceRestorationState,
     bool? shouldGoPurchase,
   }) {
     emit(state.copyWith(
       colorizedImageResultState: colorizedImageState,
       debluredImageResultState: debluredImageState,
+      faceRestorationResultState: faceRestorationState,
       shouldGoPurchase: shouldGoPurchase,
     ));
   }
@@ -48,6 +54,8 @@ class ShowResultViewModel extends Cubit<ShowResultViewDataHolder> {
       case DeblurImageRequest():
         await _handleDeblurImage(imageRequest, authViewModel);
         break;
+      case FaceRestorationRequest():
+        await _handleFaceRestoration(imageRequest, authViewModel);
     }
   }
 
@@ -55,7 +63,7 @@ class ShowResultViewModel extends Cubit<ShowResultViewDataHolder> {
     updateState(debluredImageState: DebluredImageOnLoading());
 
     await authViewModel.spendCreditForProcess(
-      amount: -1,
+      amount: -AppAction.deblurImage.creditAmount,
       onSuccess: (oldAmount) async {
         final response = await colorizeImageRepository.deblurImage(imageRequest);
         AppLogger.logInfo("Response is : $response");
@@ -103,9 +111,8 @@ class ShowResultViewModel extends Cubit<ShowResultViewDataHolder> {
   Future<void> _handleColorizeImage(ColorizeImageRequest imageRequest, AuthViewModel authViewModel) async {
     updateState(colorizedImageState: ColorizedImageOnLoading());
 
-    //Spend credit as 2
     await authViewModel.spendCreditForProcess(
-      amount: -2,
+      amount: -AppAction.colorizeImage.creditAmount,
       onSuccess: (oldAmount) async {
         final response = await colorizeImageRepository.colorizeImage(imageRequest);
         AppLogger.logInfo("Response is : $response");
@@ -146,6 +153,55 @@ class ShowResultViewModel extends Cubit<ShowResultViewDataHolder> {
       },
       onError: () {
         updateState(colorizedImageState: ColorizedImageOnError(error: "Server error."));
+      },
+    );
+  }
+
+  Future<void> _handleFaceRestoration(FaceRestorationRequest imageRequest, AuthViewModel authViewModel) async {
+    updateState(faceRestorationState: FaceRestorationOnLoading());
+
+    await authViewModel.spendCreditForProcess(
+      amount: -AppAction.faceRestoration.creditAmount,
+      onSuccess: (oldAmount) async {
+        final response = await colorizeImageRepository.faceRestoration(imageRequest);
+        AppLogger.logInfo("Response is : $response");
+
+        if (response == null || response.error != null || (response.cacheBase64 == null && response.imageUrl == null)) {
+          AppLogger.logError("Response is : $response", error: response?.error);
+          updateState(faceRestorationState: FaceRestorationOnError(error: "Server error."));
+          authViewModel.appUserRepository.updateUserCredit(
+            request: UpdateUserCreditRequest(userId: authViewModel.state.appUser.googleId!, amount: oldAmount),
+          );
+          authViewModel.updateUserCredit(oldAmount, override: true);
+          return;
+        }
+
+        // if in cache
+        if (response.cacheBase64 != null) {
+          final resultBytes = appFileManager.decodeBase64FromString(response.cacheBase64!);
+
+          updateState(
+            faceRestorationState: FaceRestorationOnLoaded(
+              result: FaceRestorationResult(bytes: resultBytes),
+            ),
+          );
+
+          return;
+        }
+
+        final resultBytes = await appFileManager.loadImageBytesFromImageUrl(response.imageUrl!);
+
+        updateState(
+          faceRestorationState: FaceRestorationOnLoaded(
+            result: FaceRestorationResult(bytes: resultBytes),
+          ),
+        );
+      },
+      hasNoCredit: () {
+        updateState(shouldGoPurchase: true);
+      },
+      onError: () {
+        updateState(faceRestorationState: FaceRestorationOnError(error: "Server error."));
       },
     );
   }

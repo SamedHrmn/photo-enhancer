@@ -3,4 +3,5 @@ enum SharedPrefKeys {
   deviceVerified,
   colorizeImageCache,
   deblurImageCache,
+  faceRestorationCache,
 }

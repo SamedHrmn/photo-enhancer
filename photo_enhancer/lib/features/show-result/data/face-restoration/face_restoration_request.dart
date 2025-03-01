@@ -1,11 +1,11 @@
 import 'package:photo_enhancer/features/show-result/data/base_image_request.dart';
 
-class DeblurImageRequest extends BaseImageRequest {
+class FaceRestorationRequest extends BaseImageRequest {
   final String imageBase64;
   final String userId;
   final String fileFormat;
 
-  DeblurImageRequest({
+  FaceRestorationRequest({
     required this.imageBase64,
     required this.userId,
     required this.fileFormat,
