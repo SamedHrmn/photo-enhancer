@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:photo_enhancer/common/helpers/app_asset_manager.dart';
 import 'package:photo_enhancer/common/helpers/app_sizer.dart';
+import 'package:photo_enhancer/common/widgets/app_lottie_player.dart';
 import 'package:photo_enhancer/common/widgets/app_text.dart';
-import 'package:photo_enhancer/core/enums/app_localized_keys.dart';
+import 'package:photo_enhancer/features/home/viewmodel/home_view_state.dart';
 
 class AppActionSelection extends StatelessWidget {
   const AppActionSelection({
     super.key,
-    required this.title,
+    required this.action,
     required this.onIconTapped,
     required this.value,
     required this.onChanged,
   });
 
-  final AppLocalizedKeys title;
   final VoidCallback onIconTapped;
   final bool value;
+  final AppAction action;
   final void Function(bool) onChanged;
 
   @override
@@ -39,9 +41,22 @@ class AppActionSelection extends StatelessWidget {
               children: [
                 Expanded(
                   child: AppText(
-                    title,
+                    action.selectionTitle(),
                     size: AppSizer.scaleWidth(12),
                   ),
+                ),
+                Row(
+                  children: [
+                    AppText(
+                      null,
+                      text: action.creditAmount.toString(),
+                    ),
+                    AppLottiePlayer(
+                      path: AppAssetManager.photoCoinLottie,
+                      height: AppSizer.scaleHeight(24),
+                      animate: false,
+                    ),
+                  ],
                 ),
                 Icon(
                   Icons.info,
@@ -51,9 +66,14 @@ class AppActionSelection extends StatelessWidget {
             ),
           ),
         ),
-        Switch(
-          value: value,
-          onChanged: onChanged,
+        Expanded(
+          child: Align(
+            alignment: Alignment.bottomLeft,
+            child: Switch(
+              value: value,
+              onChanged: onChanged,
+            ),
+          ),
         )
       ],
     );

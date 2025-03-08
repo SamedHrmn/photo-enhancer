@@ -15,6 +15,12 @@ type DebluringRequest = {
     fileFormat: string;
 };
 
+type FaceRestorationRequest = {
+    userId: string;
+    imageBase64: string;
+    fileFormat: string;
+};
+
 type ColorizationResponse = {
     success: boolean;
     error?: string | null;
@@ -22,6 +28,12 @@ type ColorizationResponse = {
 };
 
 type DebluringResponse = {
+    success: boolean;
+    error?: string | null;
+    imageUrl: string | null;
+};
+
+type FaceRestorationResponse = {
     success: boolean;
     error?: string | null;
     imageUrl: string | null;
@@ -170,6 +182,78 @@ export const deblurImage = onRequest(
                 success: false, imageUrl: null,
                 error: "Internal Server Error",
             } as DebluringResponse);
+        }
+    }
+);
+
+
+export const faceRestoration = onRequest(
+    { secrets: [replicateToken] },
+    async (req, res): Promise<any> => {
+        try {
+            if (req.method !== "POST") {
+                return res.status(405).json({ error: "Method Not Allowed" });
+            }
+
+            const { imageBase64, fileFormat, userId }: FaceRestorationRequest = req.body;
+            if (!imageBase64) {
+                return res.status(400).json({ error: "Invalid request: No image provided" });
+            }
+
+            logger.info("Buffer request length: ", imageBase64.length);
+
+            // Upload image to bucket
+            const publicImageUrl = await uploadBase64Image(userId, imageBase64, "deblurRequest", fileFormat);
+
+            logger.info("Output url generated ", publicImageUrl);
+
+            const prediction = await replicate.predictions.create({
+                version: "0fbacf7afc6c144e5be9767cff80f25aff23e52b0708f17e20f9879b2f21516c",
+                input: { img: publicImageUrl },
+            });
+
+            let isPredictionComplete = false;
+
+            // Poll for completion
+            while (!isPredictionComplete) {
+                // Wait 2 seconds before checking again
+                await new Promise((resolve) => setTimeout(resolve, 2000));
+
+                // Get updated prediction status
+                const updatedPrediction = await replicate.predictions.get(prediction.id);
+
+                // If prediction has finished, break the loop
+                if (updatedPrediction.status === "succeeded") {
+                    isPredictionComplete = true;
+
+                    if (!updatedPrediction.output || typeof updatedPrediction.output !== "string") {
+                        logger.error("Prediction returned no valid output.", updatedPrediction);
+                        return res.status(500).json({
+                            success: false, imageUrl: null,
+                            error: "No output from model",
+                        });
+                    }
+
+                    logger.info("Prediction url:", updatedPrediction.output);
+                    return res.status(200).json({
+                        success: true, imageUrl:
+                            updatedPrediction.output,
+                    });
+                } else if (updatedPrediction.status === "failed") {
+                    isPredictionComplete = true;
+                    logger.error("Prediction failed.");
+                    return res.status(500).json({
+                        success: false, imageBase64: null,
+                        error: "Prediction failed",
+                    });
+                }
+            }
+        } catch (error) {
+            console.error("Error processing request:", error);
+            return res.status(500).json({
+                success: false, imageUrl: null,
+                error: "Internal Server Error",
+            } as FaceRestorationResponse);
         }
     }
 );

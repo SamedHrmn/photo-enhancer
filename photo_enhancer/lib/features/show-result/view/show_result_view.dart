@@ -5,46 +5,28 @@ import 'package:photo_enhancer/common/helpers/app_sizer.dart';
 import 'package:photo_enhancer/common/widgets/app_primary_button.dart';
 import 'package:photo_enhancer/core/enums/app_localized_keys.dart';
 import 'package:photo_enhancer/core/widgets/app_loader_overlay_manager.dart';
-import 'package:photo_enhancer/features/auth/viewmodel/auth_view_model.dart';
-import 'package:photo_enhancer/features/colorize-image/pick_image_view_model.dart';
-import 'package:photo_enhancer/features/home/home_view_model.dart';
+import 'package:photo_enhancer/features/pick-image/viewmodel/pick_image_state.dart';
+import 'package:photo_enhancer/features/pick-image/viewmodel/pick_image_view_model.dart';
+import 'package:photo_enhancer/features/home/viewmodel/home_view_model.dart';
+import 'package:photo_enhancer/features/home/viewmodel/home_view_state.dart';
 import 'package:photo_enhancer/features/paywall/paywall_view.dart';
-import 'package:photo_enhancer/features/show-result/data/colorize-image/colorize_image_request.dart';
-import 'package:photo_enhancer/features/show-result/data/deblur-image/deblur_image_request.dart';
 import 'package:photo_enhancer/features/show-result/data/show_result_view_data_holder.dart';
+import 'package:photo_enhancer/features/show-result/manager/show_result_view_manager.dart';
 import 'package:photo_enhancer/features/show-result/show_result_view_model.dart';
 import 'package:photo_enhancer/features/show-result/view/colorize-image/colorize_image_result_view.dart';
 import 'package:photo_enhancer/features/show-result/view/deblur-image/deblur_image_result_view.dart';
+import 'package:photo_enhancer/features/show-result/view/face-restoration/face_restoration_result_view.dart';
 
-class ShowResultView extends StatelessWidget {
+class ShowResultView extends StatefulWidget {
   const ShowResultView({super.key, required this.pickedImage});
 
   final AppPickedImage pickedImage;
 
-  Future<void> _colorizeIt(BuildContext context) async {
-    final request = await context.read<PickImageViewModel>().createImageRequest(
-          authViewModel: context.read<AuthViewModel>(),
-          context.read<HomeViewModel>().state.appAction,
-        ) as ColorizeImageRequest?;
-    if (request != null) {
-      await context.read<ShowResultViewModel>().enhanceImage(request, context.read<AuthViewModel>());
-    } else {
-      context.read<PickImageViewModel>().updateState(hasError: true);
-    }
-  }
+  @override
+  State<ShowResultView> createState() => _ShowResultViewState();
+}
 
-  Future<void> _deblurIt(BuildContext context) async {
-    final request = await context.read<PickImageViewModel>().createImageRequest(
-          authViewModel: context.read<AuthViewModel>(),
-          context.read<HomeViewModel>().state.appAction,
-        ) as DeblurImageRequest?;
-    if (request != null) {
-      await context.read<ShowResultViewModel>().enhanceImage(request, context.read<AuthViewModel>());
-    } else {
-      context.read<PickImageViewModel>().updateState(hasError: true);
-    }
-  }
-
+class _ShowResultViewState extends State<ShowResultView> with ShowResultViewManager {
   @override
   Widget build(BuildContext context) {
     return BlocListener<ShowResultViewModel, ShowResultViewDataHolder>(
@@ -69,24 +51,39 @@ class ShowResultView extends StatelessWidget {
           switch (state.appAction) {
             case AppAction.colorizeImage:
               return ColorizeImageResultView(
-                onErrorTryAgain: () async => await _colorizeIt(context),
+                onErrorTryAgain: () async => await colorizeIt(context),
                 child: AppActionsView(
-                  pickedImage: pickedImage,
+                  pickedImage: widget.pickedImage,
                   actions: {
-                    AppAction.colorizeImage: () async => await _colorizeIt(context),
-                    AppAction.deblurImage: () async => await _deblurIt(context),
+                    AppAction.colorizeImage: () async => await colorizeIt(context),
+                    AppAction.deblurImage: () async => await deblurIt(context),
+                    AppAction.faceRestoration: () async => await faceRestoration(context),
                   },
                 ),
               );
 
             case AppAction.deblurImage:
               return DeblurImageResultView(
-                onErrorTryAgain: () async => await _deblurIt(context),
+                onErrorTryAgain: () async => await deblurIt(context),
                 child: AppActionsView(
-                  pickedImage: pickedImage,
+                  pickedImage: widget.pickedImage,
                   actions: {
-                    AppAction.colorizeImage: () async => await _colorizeIt(context),
-                    AppAction.deblurImage: () async => await _deblurIt(context),
+                    AppAction.colorizeImage: () async => await colorizeIt(context),
+                    AppAction.deblurImage: () async => await deblurIt(context),
+                    AppAction.faceRestoration: () async => await faceRestoration(context),
+                  },
+                ),
+              );
+
+            case AppAction.faceRestoration:
+              return FaceRestorationResultView(
+                onErrorTryAgain: () async => await faceRestoration(context),
+                child: AppActionsView(
+                  pickedImage: widget.pickedImage,
+                  actions: {
+                    AppAction.colorizeImage: () async => await colorizeIt(context),
+                    AppAction.deblurImage: () async => await deblurIt(context),
+                    AppAction.faceRestoration: () async => await faceRestoration(context),
                   },
                 ),
               );
@@ -110,20 +107,19 @@ class AppActionsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      spacing: AppSizer.scaleHeight(32),
+      spacing: AppSizer.scaleHeight(16),
       children: [
-        Expanded(
-          child: GestureDetector(
-            onTap: () async {
-              final appAction = context.read<HomeViewModel>().state.appAction;
+        GestureDetector(
+          onTap: () async {
+            final appAction = context.read<HomeViewModel>().state.appAction;
 
-              await context.read<PickImageViewModel>().pickImage(appAction: appAction);
-            },
-            child: Align(
-              alignment: Alignment.center,
-              child: Image.memory(
-                pickedImage.bytes!,
-              ),
+            await context.read<PickImageViewModel>().pickImage(appAction: appAction);
+          },
+          child: Align(
+            alignment: Alignment.center,
+            child: Image.memory(
+              pickedImage.bytes!,
+              height: AppSizer.scaleHeight(400),
             ),
           ),
         ),
@@ -149,13 +145,20 @@ class AppActionsView extends StatelessWidget {
                         await actions[state.appAction]!();
                       },
                     ),
+                  AppAction.faceRestoration => AppPrimaryButton(
+                      key: ValueKey(state.appAction),
+                      localizedKey: AppLocalizedKeys.faceRestoration,
+                      onPressed: () async {
+                        await actions[state.appAction]!();
+                      },
+                    ),
                 },
               );
             },
           ),
         ),
         SizedBox(
-          height: AppSizer.scaleHeight(32),
+          height: AppSizer.scaleHeight(16),
         ),
       ],
     );

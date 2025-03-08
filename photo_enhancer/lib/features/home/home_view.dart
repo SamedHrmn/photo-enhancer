@@ -6,8 +6,9 @@ import 'package:photo_enhancer/core/enums/app_localized_keys.dart';
 import 'package:photo_enhancer/core/widgets/base_statefull_widget.dart';
 import 'package:photo_enhancer/features/auth/viewmodel/auth_view_model.dart';
 import 'package:photo_enhancer/features/auth/viewmodel/auth_view_state.dart';
-import 'package:photo_enhancer/features/colorize-image/pick_image_view.dart';
-import 'package:photo_enhancer/features/home/home_view_model.dart';
+import 'package:photo_enhancer/features/pick-image/pick_image_view.dart';
+import 'package:photo_enhancer/features/home/viewmodel/home_view_model.dart';
+import 'package:photo_enhancer/features/home/viewmodel/home_view_state.dart';
 import 'package:photo_enhancer/features/home/widget/app_action_selection.dart';
 import 'package:photo_enhancer/features/home/widget/app_action_tooltip.dart';
 
@@ -34,10 +35,8 @@ class _HomeViewState extends BaseStatefullWidget<HomeView> {
           if (state.appUser.checkHasDefaultData()) {
             return Column(
               children: [
-                Expanded(
-                  child: PickImageView(),
-                ),
-                AppActionSelectionBuilder(),
+                PickImageView(),
+                Expanded(child: AppActionSelectionBuilder()),
               ],
             );
           }
@@ -65,16 +64,19 @@ class _AppActionSelectionBuilderState extends State<AppActionSelectionBuilder> {
       builder: (context, state) {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Row(
-            spacing: 12,
-            children: AppAction.values.map(
-              (e) {
-                final GlobalKey parentKey = GlobalKey();
+          child: Scrollbar(
+            child: GridView(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisExtent: AppSizer.scaleHeight(110),
+              ),
+              children: AppAction.values.map(
+                (e) {
+                  final GlobalKey parentKey = GlobalKey();
 
-                return Expanded(
-                  child: AppActionSelection(
+                  return AppActionSelection(
                     key: parentKey,
-                    title: e.selectionTitle(),
+                    action: e,
                     onIconTapped: () {
                       AppActionTooltip.showTooltip(
                         context,
@@ -90,10 +92,10 @@ class _AppActionSelectionBuilderState extends State<AppActionSelectionBuilder> {
                         context.read<HomeViewModel>().updateState(appAction: e);
                       }
                     },
-                  ),
-                );
-              },
-            ).toList(),
+                  );
+                },
+              ).toList(),
+            ),
           ),
         );
       },

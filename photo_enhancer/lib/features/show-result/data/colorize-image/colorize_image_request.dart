@@ -1,4 +1,4 @@
-abstract class BaseImageRequest {}
+import 'package:photo_enhancer/features/show-result/data/base_image_request.dart';
 
 class ColorizeImageRequest extends BaseImageRequest {
   final String imageBase64;

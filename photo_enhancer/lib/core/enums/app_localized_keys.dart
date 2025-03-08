@@ -20,11 +20,14 @@ enum AppLocalizedKeys {
   imageSavedSuccessfullyTo,
   tapToPickImage,
   colorizeIt,
+  faceRestoration,
   deblurIt,
   appActionColorizeImage,
   appActionDeblurImage,
+  appActionFaceRestoration,
   tooltipsColorizeImage,
   tooltipsDeblurImage,
+  tooltipsFaceRestoration,
   imageResultDialogErrorText,
   tryAgain,
   cancel,
@@ -56,6 +59,7 @@ enum AppLocalizedKeys {
       case AppLocalizedKeys.tapToPickImage:
       case AppLocalizedKeys.colorizeIt:
       case AppLocalizedKeys.deblurIt:
+      case AppLocalizedKeys.faceRestoration:
       case AppLocalizedKeys.imageResultDialogErrorText:
       case AppLocalizedKeys.tryAgain:
       case AppLocalizedKeys.cancel:
@@ -92,10 +96,14 @@ enum AppLocalizedKeys {
         return 'appAction.colorizeImage'.tr(context: context, args: args);
       case AppLocalizedKeys.appActionDeblurImage:
         return 'appAction.deblurImage'.tr(context: context, args: args);
+      case AppLocalizedKeys.appActionFaceRestoration:
+        return 'appAction.faceRestoration'.tr(context: context, args: args);
       case AppLocalizedKeys.tooltipsColorizeImage:
         return 'tooltips.colorizeImage'.tr(context: context, args: args);
       case AppLocalizedKeys.tooltipsDeblurImage:
         return 'tooltips.deblurImage'.tr(context: context, args: args);
+      case AppLocalizedKeys.tooltipsFaceRestoration:
+        return 'tooltips.faceRestoration'.tr(context: context, args: args);
     }
   }
 }

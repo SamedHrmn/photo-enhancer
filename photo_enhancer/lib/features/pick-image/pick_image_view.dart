@@ -6,9 +6,10 @@ import 'package:photo_enhancer/common/widgets/app_text.dart';
 import 'package:photo_enhancer/core/enums/app_localized_keys.dart';
 import 'package:photo_enhancer/core/theme/app_theme.dart';
 import 'package:photo_enhancer/core/widgets/app_snackbar_manager.dart';
-import 'package:photo_enhancer/features/colorize-image/pick_image_view_model.dart';
-import 'package:photo_enhancer/features/home/home_view_model.dart';
-import 'package:photo_enhancer/features/show-result/show_result_view.dart';
+import 'package:photo_enhancer/features/pick-image/viewmodel/pick_image_state.dart';
+import 'package:photo_enhancer/features/pick-image/viewmodel/pick_image_view_model.dart';
+import 'package:photo_enhancer/features/home/viewmodel/home_view_model.dart';
+import 'package:photo_enhancer/features/show-result/view/show_result_view.dart';
 
 class PickImageView extends StatelessWidget {
   const PickImageView({super.key});

@@ -12,6 +12,8 @@ import 'package:photo_enhancer/features/show-result/data/colorize-image/colorize
 import 'package:photo_enhancer/features/show-result/data/colorize-image/colorize_image_response.dart';
 import 'package:photo_enhancer/features/show-result/data/deblur-image/deblur_image_request.dart';
 import 'package:photo_enhancer/features/show-result/data/deblur-image/deblur_image_response.dart';
+import 'package:photo_enhancer/features/show-result/data/face-restoration/face_restoration_request.dart';
+import 'package:photo_enhancer/features/show-result/data/face-restoration/face_restoration_response.dart';
 
 class PhotoEnhancerRepository {
   final DioApiClient dioApiClient;
@@ -97,6 +99,47 @@ class PhotoEnhancerRepository {
         );
 
         return debluredImage;
+      }
+
+      return null;
+    } catch (e) {
+      log(e.toString(), error: e);
+      return null;
+    }
+  }
+
+  Future<FaceRestorationResponse?> faceRestoration(FaceRestorationRequest request) async {
+    try {
+      // Check output has already in cache
+      final cachedList = await sharedPrefManager.getFaceRestorationCached();
+
+      final cachedElement = cachedList.firstWhereOrNull((element) => element.inputImageBase64 == request.imageBase64);
+      if (cachedElement != null) {
+        return FaceRestorationResponse(
+          success: true,
+          cacheBase64: cachedElement.outputImageBase64,
+        );
+      }
+
+      final response = await dioApiClient.post<Map<String, dynamic>>(
+        AppInitializer.getStringEnv(EnvKeys.faceRestorationUrl),
+        data: request.toJson(),
+      );
+
+      final restoredImage = FaceRestorationResponse.fromJson(response);
+      if (restoredImage.imageUrl != null) {
+        final outputBytes = await appFileManager.loadImageBytesFromImageUrl(restoredImage.imageUrl!);
+        final outputBase64 = appFileManager.encodeBase64FromByte(outputBytes);
+
+        await sharedPrefManager.saveCacheImageData(
+          key: SharedPrefKeys.faceRestorationCache,
+          newPrediction: CachedPredictionData(
+            inputImageBase64: request.imageBase64,
+            outputImageBase64: outputBase64,
+          ),
+        );
+
+        return restoredImage;
       }
 
       return null;

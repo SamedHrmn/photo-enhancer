@@ -66,4 +66,9 @@ class SharedPrefManager {
     final list = await getStringList(SharedPrefKeys.deblurImageCache);
     return list.map((item) => CachedPredictionData.fromJson(jsonDecode(item))).toList();
   }
+
+  Future<List<CachedPredictionData>> getFaceRestorationCached() async {
+    final list = await getStringList(SharedPrefKeys.faceRestorationCache);
+    return list.map((item) => CachedPredictionData.fromJson(jsonDecode(item))).toList();
+  }
 }

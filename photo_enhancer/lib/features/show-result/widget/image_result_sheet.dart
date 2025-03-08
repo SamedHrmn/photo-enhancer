@@ -10,8 +10,9 @@ import 'package:photo_enhancer/core/navigation/app_navigator.dart';
 import 'package:photo_enhancer/core/theme/app_theme.dart';
 import 'package:photo_enhancer/core/widgets/app_snackbar_manager.dart';
 import 'package:photo_enhancer/core/widgets/base_statefull_widget.dart';
-import 'package:photo_enhancer/features/colorize-image/pick_image_view_model.dart';
-import 'package:photo_enhancer/features/home/home_view_model.dart';
+import 'package:photo_enhancer/features/pick-image/viewmodel/pick_image_view_model.dart';
+import 'package:photo_enhancer/features/home/viewmodel/home_view_model.dart';
+import 'package:photo_enhancer/features/home/viewmodel/home_view_state.dart';
 import 'package:photo_enhancer/features/show-result/show_result_view_model.dart';
 import 'package:photo_enhancer/locator.dart';
 
@@ -37,6 +38,7 @@ class _ImageResultSheetState extends BaseStatefullWidget<ImageResultSheet> {
 
     if (result != null) {
       AppSnackbarManager.show(
+        context: globalContext,
         content: AppText(
           AppLocalizedKeys.imageSavedSuccessfullyTo,
           localizedArg: [result],

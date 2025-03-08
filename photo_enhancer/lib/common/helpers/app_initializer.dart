@@ -7,7 +7,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:photo_enhancer/common/helpers/app_package_manager.dart';
 import 'package:photo_enhancer/core/enums/env_keys.dart';
-import 'package:photo_enhancer/features/auth/auth_video_player.dart';
+import 'package:photo_enhancer/features/auth/widget/auth_video_player.dart';
 import 'package:photo_enhancer/locator.dart';
 
 class AppInitializer {
