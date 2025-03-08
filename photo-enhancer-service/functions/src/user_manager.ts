@@ -26,10 +26,35 @@ interface CreateUserResponse {
 
 }
 
+
+type PhotoCoinPack = {
+    name: string;
+    value: number;
+};
+
+const PhotoCoinTypesInfo: { [key: string]: PhotoCoinPack } = {
+    pack1: { name: "Pack 1", value: 10 },
+    pack2: { name: "Pack 2", value: 25 },
+    pack3: { name: "Pack 3", value: 40 },
+    pack4: { name: "Pack 4", value: 70 },
+    pack5: { name: "Pack 5", value: 100 },
+};
+
+function parseProductId(productId: string): number | null {
+    const packKey = productId.replace('coins_', '') as keyof typeof PhotoCoinTypesInfo;
+
+    if (PhotoCoinTypesInfo[packKey]) {
+        return PhotoCoinTypesInfo[packKey].value; // Return the numeric value
+    }
+
+    return null;
+}
+
 export interface UserData {
     googleId: string;
     androidId: string;
     credit: number;
+    totalSpendingCredit: number;
     purchases: Purchase[];
 }
 
@@ -204,6 +229,7 @@ export const createUser = onRequest(async (req, res): Promise<any> => {
                 androidId: androidId,
                 googleId: googleId,
                 credit: 0,
+                totalSpendingCredit: 0,
                 purchases: [],
             } as UserData;
 
@@ -224,6 +250,7 @@ export const createUser = onRequest(async (req, res): Promise<any> => {
             googleId: googleId,
             androidId: androidId,
             credit: 10, // Free credit for the first user on this device,
+            totalSpendingCredit: 0,
             purchases: [],
         } as UserData;
 
@@ -265,6 +292,7 @@ export async function _getUserData(userId: string):
             googleId: userData.googleId,
             androidId: userData.androidId,
             credit: userData.credit,
+            totalSpendingCredit: userData.totalSpendingCredit,
             purchases: userData.purchases,
         },
     };
@@ -564,13 +592,36 @@ export const updateUserCredit = onRequest(async (req, res): Promise<any> => {
             return res.status(404).json({ error: "User not found" });
         }
 
-        // Update credit balance
-        const currentCredit = userDoc.data()?.credit ?? 0;
-        const newCredit = currentCredit + amount;
+        const userData: UserData = userDoc.data() as UserData;
+        const totalPurchases = userData.purchases.reduce((total, purchase) => {
+            const parsedPack = parseProductId(purchase.productId);
+            if (parsedPack !== null) {
+                return total + parsedPack;
+            }
+            return total;
+        }, 0);
 
-        await userRef.update({ credit: newCredit });
 
-        return res.status(200).json({ success: true, updatedCredit: newCredit });
+        const currentCredit = userData.credit ?? 0;
+        let shouldBeNewCredit = currentCredit;
+
+        shouldBeNewCredit = totalPurchases - (userData.totalSpendingCredit - amount);
+
+        logger.info(`total purchases: ${totalPurchases}`);
+
+        // Update the user's credit balance and store the last credit amount
+        await userRef.update({
+            credit: shouldBeNewCredit,
+            totalSpendingCredit: userData.totalSpendingCredit - amount,
+        });
+
+        logger.info(`totalSpending: ${userData.totalSpendingCredit - amount}` + `newCredit: ${shouldBeNewCredit}`);
+
+        return res.status(200).json({
+            success: true,
+            updatedCredit: shouldBeNewCredit,
+
+        });
     } catch (error) {
         logger.error("Error updating user credit:", error);
         return res.status(500).json({ error: "Internal Server Error" });

@@ -134,10 +134,12 @@ class AuthViewModel extends Cubit<AuthViewDataHolder> {
   }
 
   Future<void> _createNewUser() async {
-    if (state.createUserRequest == null || state.createUserRequest?.checkDataIsNull() == true) return;
+    if (state.createUserRequest == null ||
+        state.createUserRequest?.checkDataIsNull() == true) return;
 
     // If user already exist in database, returned userData as response.
-    final response = await appUserRepository.createUser(createUserRequest: state.createUserRequest!);
+    final response = await appUserRepository.createUser(
+        createUserRequest: state.createUserRequest!);
 
     if (response != null) {
       updateState(
@@ -188,7 +190,8 @@ class AuthViewModel extends Cubit<AuthViewDataHolder> {
   Future<bool> deleteAccount() async {
     if (state.appUser.googleId == null) return false;
 
-    final response = await appUserRepository.deleteAccount(id: state.appUser.googleId!);
+    final response =
+        await appUserRepository.deleteAccount(id: state.appUser.googleId!);
     if (response) {
       await prefManager.setString(SharedPrefKeys.googleId, "");
     }
@@ -209,16 +212,17 @@ class AuthViewModel extends Cubit<AuthViewDataHolder> {
       return;
     }
 
-    //Spend credit as 1
     await appUserRepository.updateUserCredit(
-      request: UpdateUserCreditRequest(userId: state.appUser.googleId!, amount: amount),
+      request: UpdateUserCreditRequest(
+          userId: state.appUser.googleId!, amount: amount),
     );
 
     // Get user data and check credit was spending
-    final userData = await appUserRepository.getUserData(id: state.appUser.googleId!);
-    if (userData != null && credit + amount == userData.credit) {
-      updateUserCredit(amount);
-      onSuccess(credit);
+    final userData =
+        await appUserRepository.getUserData(id: state.appUser.googleId!);
+    if (userData != null) {
+      updateState(appUser: AppUser.fromResponse(userData));
+      onSuccess(userData.credit);
     } else {
       onError();
     }
